@@ -1,6 +1,7 @@
 @echo off
 title BirthdayManager
 cd /d "C:\Projekte\BirthdayManager"
-start "" "BirthdayApp.html"
+start "" "BirthdayManager.html"
 echo BirthdayManager gestartet im Browser
 pause
+

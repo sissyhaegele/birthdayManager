@@ -10,7 +10,7 @@ Eine moderne Web-Anwendung zur Verwaltung von Geburtstagen mit WhatsApp-Integrat
 
 ## Installation
 1. Server starten: `.\server.ps1`
-2. App Ã¶ffnen: `BirthdayApp.html`
+2. App Ã¶ffnen: `BirthdayManager.html`
 
 ## Verwendung
 1. Bereiche anlegen
@@ -30,3 +30,4 @@ MIT
 
 ## Autor
 Sissy Haegele
+
