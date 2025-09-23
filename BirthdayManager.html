@@ -464,6 +464,17 @@
     </div>
 
     <script>
+        // Deutsche Monatsnamen
+        const DEUTSCHE_MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+                                  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+        
+        // Funktion für deutsche Datumsanzeige
+        function getDeutschesDatum(dateStr) {
+            const date = new Date(dateStr);
+            const tag = date.getDate();
+            const monat = DEUTSCHE_MONATE[date.getMonth()];
+            return tag + '. ' + monat;
+        }
         // Datenstruktur
         let data = {
             groups: ['Familie', 'Verein', 'CDU', 'Freunde', 'Arbeit', 'Nachbarn'],
@@ -699,7 +710,7 @@
             let html = '<h3>Alle Geburtstage</h3>';
             sortedPeople.forEach(person => {
                 const bDate = new Date(person.birthdate);
-                const dateStr = bDate.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' });
+                const dateStr = getDeutschesDatum(person.birthdate);
                 const year = bDate.getFullYear();
                 
                 html += `
