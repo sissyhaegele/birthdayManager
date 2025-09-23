@@ -1,74 +1,70 @@
-# WhatsApp Server fuer BirthdayManager
-param([int]$Port = 8888)
-
-Write-Host ""
-Write-Host "==================================================" -ForegroundColor Cyan
-Write-Host "   WhatsApp Server - Port $Port" -ForegroundColor Cyan
-Write-Host "==================================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Server laeuft auf: http://localhost:$Port" -ForegroundColor Green
-Write-Host "Druecken Sie Strg+C zum Beenden" -ForegroundColor Yellow
+﻿Write-Host "WhatsApp Server startet..." -ForegroundColor Cyan
 Write-Host ""
 
-$listener = New-Object System.Net.HttpListener
-$listener.Prefixes.Add("http://localhost:$Port/")
-$listener.Start()
+$http = [System.Net.HttpListener]::new()
+$http.Prefixes.Add("http://localhost:8888/")
+$http.Start()
 
-Write-Host "[OK] Server gestartet" -ForegroundColor Green
+Write-Host "Server läuft auf http://localhost:8888" -ForegroundColor Green
+Write-Host "Strg+C zum Beenden" -ForegroundColor Yellow
 Write-Host ""
 
-while ($listener.IsListening) {
-    try {
-        $context = $listener.GetContext()
-        $request = $context.Request
-        $response = $context.Response
-        
-        # CORS Header
-        $response.Headers.Add("Access-Control-Allow-Origin", "*")
-        
-        $url = $request.Url.LocalPath
-        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] Request: $url" -ForegroundColor Cyan
-        
-        if ($request.HttpMethod -eq "OPTIONS") {
-            $response.StatusCode = 200
-            $response.Close()
-            continue
+while ($http.IsListening) {
+    $context = $http.GetContext()
+    $request = $context.Request
+    $response = $context.Response
+    
+    # CORS
+    $response.AddHeader("Access-Control-Allow-Origin", "*")
+    $response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    
+    Write-Host "Request: $($request.Url.LocalPath)" -ForegroundColor Gray
+    
+    if ($request.HttpMethod -eq "OPTIONS") {
+        $response.StatusCode = 200
+        $response.Close()
+        continue
+    }
+    
+    switch ($request.Url.LocalPath) {
+        "/status" {
+            $message = '{"status":"online"}'
+            $buffer = [Text.Encoding]::UTF8.GetBytes($message)
+            $response.ContentLength64 = $buffer.Length
+            $response.OutputStream.Write($buffer, 0, $buffer.Length)
+            $response.OutputStream.Close()
+            Write-Host "  Status: OK" -ForegroundColor Green
         }
         
-        $responseData = ""
-        
-        if ($url -eq "/send") {
-            $reader = New-Object System.IO.StreamReader($request.InputStream)
+        "/send" {
+            $reader = [System.IO.StreamReader]::new($request.InputStream)
             $body = $reader.ReadToEnd()
             $reader.Close()
             
-            $data = $body | ConvertFrom-Json
-            $message = $data.message
-            
-            # Nachricht kopieren
-            $message | Set-Clipboard
-            Write-Host "    [OK] Nachricht kopiert" -ForegroundColor Green
-            
-            # WhatsApp oeffnen
-            Start-Process "whatsapp://" -ErrorAction SilentlyContinue
-            
-            $responseData = '{"status":"success"}'
-        }
-        elseif ($url -eq "/status") {
-            $responseData = '{"status":"online"}'
-        }
-        else {
-            $responseData = '{"status":"error"}'
+            try {
+                $json = $body | ConvertFrom-Json
+                Set-Clipboard $json.message
+                Write-Host "  Nachricht kopiert!" -ForegroundColor Green
+                
+                $message = '{"status":"success"}'
+                $buffer = [Text.Encoding]::UTF8.GetBytes($message)
+                $response.ContentLength64 = $buffer.Length
+                $response.OutputStream.Write($buffer, 0, $buffer.Length)
+                $response.OutputStream.Close()
+            }
+            catch {
+                Write-Host "  Fehler: $_" -ForegroundColor Red
+            }
         }
         
-        # Response senden
-        $buffer = [System.Text.Encoding]::UTF8.GetBytes($responseData)
-        $response.ContentType = "application/json"
-        $response.ContentLength64 = $buffer.Length
-        $response.OutputStream.Write($buffer, 0, $buffer.Length)
-        $response.Close()
-        
-    } catch {
-        Write-Host "[ERROR] $_" -ForegroundColor Red
+        default {
+            $message = '{"error":"not found"}'
+            $buffer = [Text.Encoding]::UTF8.GetBytes($message)
+            $response.ContentLength64 = $buffer.Length
+            $response.OutputStream.Write($buffer, 0, $buffer.Length)
+            $response.OutputStream.Close()
+        }
     }
+    
+    $response.Close()
 }
