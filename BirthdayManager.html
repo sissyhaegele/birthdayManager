@@ -315,6 +315,16 @@
             background: #f8f9fa;
             font-weight: 600;
         }
+        
+        /* Server-Port-Anzeige */
+        .server-port {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            font-family: monospace;
+            margin: 0 5px;
+        }
     </style>
 </head>
 <body>
@@ -330,6 +340,7 @@
             <button class="tab" onclick="switchTab('import')">Import/Export</button>
             <button class="tab" onclick="switchTab('bereiche')">Bereiche verwalten</button>
             <button class="tab" onclick="switchTab('reminders')">Erinnerungen</button>
+            <button class="tab" onclick="switchTab('whatsapp-config')">WhatsApp Config</button>
         </div>
 
         <div class="content">
@@ -439,6 +450,35 @@
                 <button class="btn" onclick="generateWeekReminders()">Wochenübersicht</button>
                 <div id="reminderOutput" style="margin-top: 20px;"></div>
             </div>
+            
+            <!-- WhatsApp Konfiguration -->
+            <div id="whatsapp-config" class="tab-content">
+                <h2>WhatsApp Konfiguration</h2>
+                <div class="info-box">
+                    <strong>Server-Status:</strong> <span id="configServerStatus">Prüfe...</span><br>
+                    <strong>Aktueller Port:</strong> <span class="server-port" id="currentServerPort">9999</span>
+                </div>
+                <div class="form-group">
+                    <label for="serverPort">Server Port:</label>
+                    <input type="number" id="serverPort" value="9999" min="1000" max="65535">
+                    <small style="display: block; margin-top: 5px; color: #666;">
+                        Standard: 9999. Ändern Sie nur bei Konflikten.
+                    </small>
+                </div>
+                <button class="btn" onclick="saveWhatsAppConfig()">Einstellungen speichern</button>
+                <button class="btn btn-secondary" onclick="testWhatsAppConnection()">Verbindung testen</button>
+                
+                <div style="margin-top: 30px;">
+                    <h3>Server starten</h3>
+                    <div class="info-box">
+                        <strong>PowerShell-Befehl:</strong><br>
+                        <code style="display: block; padding: 10px; background: #f0f0f0; margin-top: 10px;">
+                            .\server.ps1 -Port <span id="psCommandPort">9999</span>
+                        </code>
+                        Führen Sie diesen Befehl in PowerShell aus, um den Server zu starten.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -458,8 +498,9 @@
             </select>
         </div>
         <textarea id="whatsappMessage" style="width:100%;min-height:120px;padding:10px;border:1px solid #ddd;border-radius:5px;margin-bottom:10px;" placeholder="Nachricht..."></textarea>
-        <button class="btn btn-success" onclick="sendToWhatsApp()">Senden</button>
+        <button class="btn btn-success" onclick="sendToWhatsApp()">An Gruppe senden</button>
         <button class="btn" onclick="collectBirthdays()">Geburtstage sammeln</button>
+        <button class="btn btn-secondary" onclick="sendDirectMessage()">Direkt senden</button>
         <button class="btn btn-secondary" onclick="toggleWhatsAppPanel()">Schließen</button>
     </div>
 
@@ -468,6 +509,11 @@
         const DEUTSCHE_MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
                                   'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
         
+        // WhatsApp Konfiguration
+        let WHATSAPP_CONFIG = {
+            port: 9999
+        };
+        
         // Funktion für deutsche Datumsanzeige
         function getDeutschesDatum(dateStr) {
             const date = new Date(dateStr);
@@ -475,6 +521,7 @@
             const monat = DEUTSCHE_MONATE[date.getMonth()];
             return tag + '. ' + monat;
         }
+        
         // Datenstruktur
         let data = {
             groups: ['Familie', 'Verein', 'CDU', 'Freunde', 'Arbeit', 'Nachbarn'],
@@ -484,6 +531,7 @@
         // Beim Laden
         window.onload = function() {
             loadData();
+            loadWhatsAppConfig();
             initializeGroups();
             updateDisplay();
             checkWhatsAppServer();
@@ -502,6 +550,34 @@
 
         function saveData() {
             localStorage.setItem('birthdayManagerData', JSON.stringify(data));
+        }
+        
+        function loadWhatsAppConfig() {
+            const savedConfig = localStorage.getItem('whatsappConfig');
+            if (savedConfig) {
+                try {
+                    WHATSAPP_CONFIG = JSON.parse(savedConfig);
+                    document.getElementById('serverPort').value = WHATSAPP_CONFIG.port;
+                    document.getElementById('currentServerPort').textContent = WHATSAPP_CONFIG.port;
+                    document.getElementById('psCommandPort').textContent = WHATSAPP_CONFIG.port;
+                } catch (e) {
+                    console.error('Error loading WhatsApp config:', e);
+                }
+            }
+        }
+        
+        function saveWhatsAppConfig() {
+            const port = parseInt(document.getElementById('serverPort').value);
+            if (port >= 1000 && port <= 65535) {
+                WHATSAPP_CONFIG.port = port;
+                localStorage.setItem('whatsappConfig', JSON.stringify(WHATSAPP_CONFIG));
+                document.getElementById('currentServerPort').textContent = port;
+                document.getElementById('psCommandPort').textContent = port;
+                alert('WhatsApp-Einstellungen gespeichert! Bitte starten Sie den Server mit dem neuen Port neu.');
+                checkWhatsAppServer();
+            } else {
+                alert('Bitte geben Sie einen gültigen Port zwischen 1000 und 65535 ein.');
+            }
         }
 
         function initializeGroups() {
@@ -737,8 +813,8 @@
         }
 
         function editPerson(id) {
-    // Fix für String und Number IDs
-    id = parseInt(id) || id;
+            // Fix für String und Number IDs
+            id = parseInt(id) || id;
             const person = data.people.find(p => p.id === id);
             if (!person) return;
             
@@ -762,8 +838,8 @@
         }
 
         function deletePerson(id) {
-    // Fix für String und Number IDs
-    id = parseInt(id) || id;
+            // Fix für String und Number IDs
+            id = parseInt(id) || id;
             if (confirm('Person wirklich löschen?')) {
                 data.people = data.people.filter(p => p.id !== id);
                 saveData();
@@ -1080,8 +1156,10 @@
             output.innerHTML = html;
         }
 
-        // WhatsApp Funktionen
-        const WHATSAPP_SERVER_URL = 'http://localhost:8888';
+        // WhatsApp Funktionen - KORRIGIERT
+        function getWhatsAppServerURL() {
+            return `http://localhost:${WHATSAPP_CONFIG.port}`;
+        }
         
         function toggleWhatsAppPanel() {
             const panel = document.getElementById('whatsappPanel');
@@ -1093,29 +1171,52 @@
         }
 
         async function checkWhatsAppServer() {
+            const statusElements = [
+                document.getElementById('whatsappStatus'),
+                document.getElementById('configServerStatus')
+            ];
+            
             try {
-                const response = await fetch(WHATSAPP_SERVER_URL + '/status');
-                const status = document.getElementById('whatsappStatus');
-                status.textContent = 'Server Online - Bereit';
-                status.style.background = '#d4edda';
-                status.style.color = '#155724';
+                const response = await fetch(getWhatsAppServerURL() + '/status');
+                const data = await response.json();
+                
+                statusElements.forEach(el => {
+                    if (el) {
+                        el.textContent = `Server Online - Port ${WHATSAPP_CONFIG.port}`;
+                        el.style.background = '#d4edda';
+                        el.style.color = '#155724';
+                    }
+                });
             } catch (e) {
-                const status = document.getElementById('whatsappStatus');
-                status.textContent = 'Server Offline - Bitte starten';
-                status.style.background = '#f8d7da';
-                status.style.color = '#721c24';
+                statusElements.forEach(el => {
+                    if (el) {
+                        el.textContent = `Server Offline - Bitte starten auf Port ${WHATSAPP_CONFIG.port}`;
+                        el.style.background = '#f8d7da';
+                        el.style.color = '#721c24';
+                    }
+                });
+            }
+        }
+        
+        async function testWhatsAppConnection() {
+            try {
+                const response = await fetch(getWhatsAppServerURL() + '/status');
+                const data = await response.json();
+                alert(`Server-Verbindung erfolgreich!\n\nPort: ${data.port}\nStatus: ${data.status}\nZeit: ${data.timestamp}`);
+            } catch (e) {
+                alert(`Verbindung fehlgeschlagen!\n\nBitte starten Sie den Server mit:\n.\server.ps1 -Port ${WHATSAPP_CONFIG.port}`);
             }
         }
 
         function collectBirthdays() {
             const today = new Date();
             const selectedGroup = document.getElementById('whatsappGroup').value;
-            let message = `GEBURTSTAGS-ERINNERUNG\n${today.toLocaleDateString('de-DE')}\n`;
+            let message = `🎂 GEBURTSTAGS-ERINNERUNG\n📅 ${today.toLocaleDateString('de-DE')}\n`;
             
             if (selectedGroup !== 'all') {
-                message += `Bereich: ${selectedGroup}\n`;
+                message += `📌 Bereich: ${selectedGroup}\n`;
             }
-            message += '\n';
+            message += '━━━━━━━━━━━━━━━━\n\n';
             
             let todayBirthdays = data.people.filter(person => {
                 const bDate = new Date(person.birthdate);
@@ -1128,41 +1229,91 @@
             }
             
             if (todayBirthdays.length > 0) {
-                message += 'HEUTE Geburtstag:\n';
+                message += '🎉 HEUTE Geburtstag:\n\n';
                 todayBirthdays.forEach(person => {
                     const age = today.getFullYear() - new Date(person.birthdate).getFullYear();
                     const groupsText = person.groups ? ` (${person.groups.join(', ')})` : '';
-                    message += `- ${person.name} wird ${age} Jahre${groupsText}\n`;
+                    message += `🎈 ${person.name} wird ${age} Jahre${groupsText}\n`;
                 });
             } else {
-                message += 'Keine Geburtstage heute';
+                message += '📝 Keine Geburtstage heute';
                 if (selectedGroup !== 'all') {
                     message += ` im Bereich ${selectedGroup}`;
                 }
                 message += '.\n';
             }
             
-            message += '\nBitte alle gratulieren!';
+            message += '\n━━━━━━━━━━━━━━━━\n✨ Bitte alle gratulieren!';
             
             document.getElementById('whatsappMessage').value = message;
         }
 
         async function sendToWhatsApp() {
             const message = document.getElementById('whatsappMessage').value;
+            const selectedGroup = document.getElementById('whatsappGroup').value;
+            
+            if (!message.trim()) {
+                alert('Bitte geben Sie eine Nachricht ein!');
+                return;
+            }
             
             try {
-                const response = await fetch(WHATSAPP_SERVER_URL + '/send', {
+                const response = await fetch(getWhatsAppServerURL() + '/send-group', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: message })
+                    body: JSON.stringify({ 
+                        message: message,
+                        bereich: selectedGroup,
+                        groupId: selectedGroup // Optional
+                    })
                 });
                 
                 if (response.ok) {
-                    alert('WhatsApp öffnet sich!\n\n1. Gruppe wählen\n2. STRG+V\n3. Enter');
+                    const data = await response.json();
+                    alert('WhatsApp öffnet sich!\n\n1. Gruppe wählen\n2. STRG+V zum Einfügen\n3. Enter zum Senden');
                     toggleWhatsAppPanel();
+                } else {
+                    alert('Fehler beim Senden. Bitte Server-Status prüfen.');
                 }
             } catch (e) {
-                alert('Server nicht erreichbar!\n\nBitte starten Sie server.ps1');
+                alert(`Server nicht erreichbar!\n\nBitte starten Sie den Server:\n.\server.ps1 -Port ${WHATSAPP_CONFIG.port}`);
+            }
+        }
+        
+        async function sendDirectMessage() {
+            const message = document.getElementById('whatsappMessage').value;
+            
+            if (!message.trim()) {
+                alert('Bitte geben Sie eine Nachricht ein!');
+                return;
+            }
+            
+            const phoneNumber = prompt('Bitte Telefonnummer eingeben (mit Ländercode, z.B. 491234567890):');
+            if (!phoneNumber) return;
+            
+            const name = prompt('Name des Empfängers (optional):') || 'Direkt';
+            
+            try {
+                const response = await fetch(getWhatsAppServerURL() + '/send-whatsapp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        phone: phoneNumber.replace(/\D/g, ''), // Entferne alle Nicht-Ziffern
+                        message: message,
+                        name: name
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`WhatsApp öffnet sich für ${name}!`);
+                    toggleWhatsAppPanel();
+                } else {
+                    const error = await response.json();
+                    alert(`Fehler: ${error.error}`);
+                }
+            } catch (e) {
+                alert(`Server nicht erreichbar!\n\nBitte starten Sie den Server:\n.\server.ps1 -Port ${WHATSAPP_CONFIG.port}`);
             }
         }
 
