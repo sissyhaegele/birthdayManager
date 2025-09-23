@@ -726,6 +726,8 @@
         }
 
         function editPerson(id) {
+    // Fix für String und Number IDs
+    id = parseInt(id) || id;
             const person = data.people.find(p => p.id === id);
             if (!person) return;
             
@@ -749,6 +751,8 @@
         }
 
         function deletePerson(id) {
+    // Fix für String und Number IDs
+    id = parseInt(id) || id;
             if (confirm('Person wirklich löschen?')) {
                 data.people = data.people.filter(p => p.id !== id);
                 saveData();
@@ -900,36 +904,7 @@
             };
             
             // Wichtig: UTF-8 mit BOM Support
-            // Versuche verschiedene Encodings
-            const tryReadFile = () => {
-                const reader2 = new FileReader();
-                reader2.onload = function(e) {
-                    // Konvertiere zu sauberem String
-                    let text = e.target.result;
-                    // Entferne BOM wenn vorhanden
-                    if (text.charCodeAt(0) === 0xFEFF) {
-                        text = text.substr(1);
-                    }
-                    // Ersetze häufige fehlerhafte Umlaute
-                    text = text.replace(/Ã¤/g, 'ä')
-                              .replace(/Ã¶/g, 'ö')
-                              .replace(/Ã¼/g, 'ü')
-                              .replace(/Ã„/g, 'Ä')
-                              .replace(/Ã–/g, 'Ö')
-                              .replace(/Ãœ/g, 'Ü')
-                              .replace(/ÃŸ/g, 'ß')
-                              .replace(/â€™/g, "'")
-                              .replace(/â€"/g, '-')
-                              .replace(/â€œ/g, '"')
-                              .replace(/â€/g, '"');
-                    
-                    // Setze bereinigten Text
-                    event.target.result = text;
-                };
-                reader2.readAsText(file);
-            };
-            tryReadFile();
-            return;
+            reader.readAsText(file, 'UTF-8');
             e.target.value = '';
         }
         
