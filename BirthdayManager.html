@@ -2,8 +2,9 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Manager - Flexibler Import</title>
+    <title>Birthday Manager - Vollversion</title>
     <style>
         * {
             margin: 0;
@@ -100,6 +101,44 @@
             font-size: 16px;
         }
 
+        /* Checkbox-Liste für Bereiche */
+        .checkbox-list {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #e8f4f8;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+            margin: 0;
+        }
+
         .btn {
             padding: 12px 24px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -142,6 +181,23 @@
             border-left: 4px solid #667eea;
         }
 
+        /* Bereich-Tags */
+        .area-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 5px 0;
+        }
+
+        .area-tag {
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
         .import-section {
             border: 2px dashed #667eea;
             padding: 30px;
@@ -169,24 +225,7 @@
             display: none;
         }
 
-        .import-info {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .import-preview {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-        }
-
-        /* WhatsApp Integration */
+        /* WhatsApp Button - Text statt Emoji */
         .whatsapp-button {
             position: fixed;
             bottom: 20px;
@@ -199,7 +238,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
+            font-size: 20px;
+            font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             z-index: 1000;
@@ -251,6 +291,14 @@
             margin-bottom: 30px;
         }
 
+        .info-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0066cc;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -272,7 +320,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎂 Birthday Manager</h1>
+            <h1>Birthday Manager</h1>
             <p>Verwalten Sie Geburtstage für verschiedene Bereiche</p>
         </div>
 
@@ -288,7 +336,7 @@
             <!-- Übersicht -->
             <div id="overview" class="tab-content active">
                 <div class="form-group">
-                    <label for="currentGroup">Aktueller Bereich:</label>
+                    <label for="currentGroup">Bereich filtern:</label>
                     <select id="currentGroup" onchange="updateDisplay()">
                         <option value="all">Alle Bereiche</option>
                     </select>
@@ -301,31 +349,34 @@
             <!-- Person hinzufügen -->
             <div id="add" class="tab-content">
                 <h2>Neue Person hinzufügen</h2>
+                <div class="info-box">
+                    <strong>Info:</strong> Nur Name und Geburtsdatum sind Pflichtfelder. Eine Person kann mehreren Bereichen zugeordnet werden.
+                </div>
                 <form id="addPersonForm" onsubmit="addPerson(event)">
                     <div class="form-group">
-                        <label for="personName">Name (Pflichtfeld) *</label>
+                        <label for="personName">Name *</label>
                         <input type="text" id="personName" required placeholder="Vor- und Nachname">
                     </div>
                     <div class="form-group">
-                        <label for="personBirthdate">Geburtsdatum (Pflichtfeld) *</label>
+                        <label for="personBirthdate">Geburtsdatum *</label>
                         <input type="date" id="personBirthdate" required>
                     </div>
                     <div class="form-group">
-                        <label for="personGroup">Bereich (optional)</label>
-                        <select id="personGroup">
-                            <option value="Allgemein">Allgemein</option>
-                        </select>
+                        <label>Bereiche zuordnen (Mehrfachauswahl möglich):</label>
+                        <div class="checkbox-list" id="personGroups">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="personEmail">E-Mail (optional)</label>
+                        <label for="personEmail">E-Mail</label>
                         <input type="email" id="personEmail" placeholder="email@beispiel.de">
                     </div>
                     <div class="form-group">
-                        <label for="personPhone">Telefon (optional)</label>
+                        <label for="personPhone">Telefon</label>
                         <input type="tel" id="personPhone" placeholder="+49...">
                     </div>
                     <div class="form-group">
-                        <label for="personNotes">Notizen (optional)</label>
+                        <label for="personNotes">Notizen</label>
                         <textarea id="personNotes" rows="3" placeholder="Zusätzliche Informationen..."></textarea>
                     </div>
                     <button type="submit" class="btn">Person hinzufügen</button>
@@ -336,35 +387,31 @@
             <div id="import" class="tab-content">
                 <h2>Daten importieren/exportieren</h2>
                 
-                <div class="import-info">
-                    <h3>📋 Import-Anleitung</h3>
-                    <p><strong>Nur 2 Pflichtfelder:</strong> Name und Geburtsdatum</p>
-                    <p><strong>Optionale Felder:</strong> Bereich, Email, Telefon, Notizen</p>
-                    <p><strong>Unterstützte Formate:</strong></p>
-                    <ul>
-                        <li>CSV-Datei (Komma-getrennt)</li>
-                        <li>Excel als CSV exportiert</li>
-                        <li>Text-Datei mit Komma-Trennung</li>
-                    </ul>
-                    <p><strong>Datumsformate:</strong> DD.MM.YYYY, DD/MM/YYYY oder YYYY-MM-DD</p>
+                <div class="info-box">
+                    <strong>Import-Format:</strong><br>
+                    Name,Geburtsdatum,Bereiche,Email,Telefon,Notizen<br>
+                    <small>
+                    - Nur Name und Geburtsdatum sind Pflicht<br>
+                    - Bereiche mit Semikolon trennen (z.B. Familie;Verein)<br>
+                    - Datum: TT.MM.JJJJ oder JJJJ-MM-TT<br>
+                    - UTF-8 Encoding wird automatisch erkannt
+                    </small>
                 </div>
                 
                 <div class="import-section">
-                    <h3>Datei hochladen</h3>
-                    <p>Wählen Sie eine CSV-Datei mit mindestens Name und Geburtsdatum</p>
+                    <h3>CSV-Datei hochladen</h3>
                     <label for="fileInput" class="file-input-label">
-                        📁 Datei auswählen
+                        Datei auswählen
                     </label>
                     <input type="file" id="fileInput" accept=".csv,.txt" onchange="handleFileImport(event)">
                     <div id="importStatus" style="margin-top: 20px;"></div>
-                    <div id="importPreview" class="import-preview" style="display:none;"></div>
+                    <div id="importPreview" style="margin-top: 20px; display: none;"></div>
                 </div>
 
                 <div style="margin-top: 30px;">
                     <h3>Daten exportieren</h3>
-                    <button class="btn" onclick="exportData()">📥 Als CSV exportieren</button>
-                    <button class="btn btn-secondary" onclick="downloadTemplate()">📄 Vorlage herunterladen</button>
-                    <button class="btn btn-secondary" onclick="downloadMinimalTemplate()">📝 Minimale Vorlage (nur Pflichtfelder)</button>
+                    <button class="btn" onclick="exportData()">Als CSV exportieren</button>
+                    <button class="btn btn-secondary" onclick="downloadTemplate()">Vorlage herunterladen</button>
                 </div>
             </div>
 
@@ -382,6 +429,12 @@
             <!-- Erinnerungen -->
             <div id="reminders" class="tab-content">
                 <h2>Erinnerungen</h2>
+                <div class="form-group">
+                    <label for="reminderGroup">Bereich für Erinnerungen:</label>
+                    <select id="reminderGroup">
+                        <option value="all">Alle Bereiche</option>
+                    </select>
+                </div>
                 <button class="btn btn-success" onclick="generateReminders()">Heutige Erinnerungen</button>
                 <button class="btn" onclick="generateWeekReminders()">Wochenübersicht</button>
                 <div id="reminderOutput" style="margin-top: 20px;"></div>
@@ -389,8 +442,8 @@
         </div>
     </div>
 
-    <!-- WhatsApp Button -->
-    <div class="whatsapp-button" onclick="toggleWhatsAppPanel()">📱</div>
+    <!-- WhatsApp Button mit Text statt Emoji -->
+    <div class="whatsapp-button" onclick="toggleWhatsAppPanel()">WA</div>
 
     <!-- WhatsApp Panel -->
     <div class="whatsapp-panel" id="whatsappPanel">
@@ -398,16 +451,22 @@
         <div id="whatsappStatus" style="padding: 8px; background: #f0f0f0; border-radius: 5px; margin-bottom: 10px;">
             Server Status: Prüfe...
         </div>
+        <div class="form-group">
+            <label for="whatsappGroup">Für Bereich:</label>
+            <select id="whatsappGroup">
+                <option value="all">Alle Bereiche</option>
+            </select>
+        </div>
         <textarea id="whatsappMessage" style="width:100%;min-height:120px;padding:10px;border:1px solid #ddd;border-radius:5px;margin-bottom:10px;" placeholder="Nachricht..."></textarea>
-        <button class="btn btn-success" onclick="sendToWhatsApp()">📤 Senden</button>
-        <button class="btn" onclick="collectBirthdays()">🎂 Geburtstage sammeln</button>
-        <button class="btn btn-secondary" onclick="toggleWhatsAppPanel()">❌ Schließen</button>
+        <button class="btn btn-success" onclick="sendToWhatsApp()">Senden</button>
+        <button class="btn" onclick="collectBirthdays()">Geburtstage sammeln</button>
+        <button class="btn btn-secondary" onclick="toggleWhatsAppPanel()">Schließen</button>
     </div>
 
     <script>
         // Datenstruktur
         let data = {
-            groups: ['Allgemein', 'Verein', 'CDU', 'Familie', 'Freunde', 'Arbeit'],
+            groups: ['Familie', 'Verein', 'CDU', 'Freunde', 'Arbeit', 'Nachbarn'],
             people: []
         };
 
@@ -420,33 +479,62 @@
         };
 
         function loadData() {
-            const savedData = localStorage.getItem('birthdayData');
+            const savedData = localStorage.getItem('birthdayManagerData');
             if (savedData) {
-                data = JSON.parse(savedData);
-                // Stelle sicher dass "Allgemein" existiert
-                if (!data.groups.includes('Allgemein')) {
-                    data.groups.unshift('Allgemein');
+                try {
+                    data = JSON.parse(savedData);
+                } catch (e) {
+                    console.error('Error loading data:', e);
                 }
             }
         }
 
         function saveData() {
-            localStorage.setItem('birthdayData', JSON.stringify(data));
+            localStorage.setItem('birthdayManagerData', JSON.stringify(data));
         }
 
         function initializeGroups() {
+            // Filter-Dropdown
             const groupSelect = document.getElementById('currentGroup');
-            const personGroupSelect = document.getElementById('personGroup');
+            const reminderGroupSelect = document.getElementById('reminderGroup');
+            const whatsappGroupSelect = document.getElementById('whatsappGroup');
             
             groupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
-            personGroupSelect.innerHTML = '';
+            reminderGroupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
+            whatsappGroupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
             
             data.groups.forEach(group => {
                 groupSelect.innerHTML += `<option value="${group}">${group}</option>`;
-                personGroupSelect.innerHTML += `<option value="${group}">${group}</option>`;
+                reminderGroupSelect.innerHTML += `<option value="${group}">${group}</option>`;
+                whatsappGroupSelect.innerHTML += `<option value="${group}">${group}</option>`;
             });
             
+            // Checkbox-Liste für Person hinzufügen
+            updateGroupCheckboxes();
             updateGroupsList();
+        }
+
+        function updateGroupCheckboxes() {
+            const checkboxList = document.getElementById('personGroups');
+            checkboxList.innerHTML = '';
+            
+            data.groups.forEach(group => {
+                const item = document.createElement('div');
+                item.className = 'checkbox-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="group_${group}" value="${group}">
+                    <label for="group_${group}">${group}</label>
+                `;
+                checkboxList.appendChild(item);
+                
+                // Klick auf das ganze Item
+                item.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'INPUT') {
+                        const checkbox = item.querySelector('input');
+                        checkbox.checked = !checkbox.checked;
+                    }
+                });
+            });
         }
 
         function switchTab(tabName) {
@@ -460,17 +548,31 @@
         function addPerson(e) {
             e.preventDefault();
             
+            // Sammle ausgewählte Bereiche
+            const selectedGroups = [];
+            document.querySelectorAll('#personGroups input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedGroups.push(checkbox.value);
+            });
+            
+            // Falls keine Bereiche ausgewählt, nehme "Allgemein"
+            if (selectedGroups.length === 0) {
+                if (!data.groups.includes('Allgemein')) {
+                    data.groups.push('Allgemein');
+                    initializeGroups();
+                }
+                selectedGroups.push('Allgemein');
+            }
+            
             const person = {
                 id: Date.now(),
                 name: document.getElementById('personName').value.trim(),
                 birthdate: document.getElementById('personBirthdate').value,
-                group: document.getElementById('personGroup').value || 'Allgemein',
+                groups: selectedGroups, // Array von Bereichen
                 email: document.getElementById('personEmail').value.trim(),
                 phone: document.getElementById('personPhone').value.trim(),
                 notes: document.getElementById('personNotes').value.trim()
             };
             
-            // Nur Name und Geburtsdatum sind Pflicht
             if (!person.name || !person.birthdate) {
                 alert('Bitte Name und Geburtsdatum eingeben!');
                 return;
@@ -480,15 +582,18 @@
             saveData();
             updateDisplay();
             e.target.reset();
-            alert('Person wurde hinzugefügt!');
+            alert(`${person.name} wurde erfolgreich hinzugefügt!`);
         }
 
         function updateDisplay() {
             const currentGroup = document.getElementById('currentGroup').value;
             let filteredPeople = data.people;
             
+            // Filtern nach Bereich (Person wird angezeigt wenn sie dem Bereich angehört)
             if (currentGroup !== 'all') {
-                filteredPeople = data.people.filter(p => p.group === currentGroup);
+                filteredPeople = data.people.filter(p => 
+                    p.groups && p.groups.includes(currentGroup)
+                );
             }
             
             updateStatistics(filteredPeople);
@@ -507,18 +612,21 @@
                 return bDate.getMonth() === currentMonth;
             }).length;
             
+            // Berechne Personen mit mehreren Bereichen
+            const multiArea = data.people.filter(p => p.groups && p.groups.length > 1).length;
+            
             stats.innerHTML = `
                 <div class="stat-card">
                     <div style="font-size: 2em; font-weight: bold;">${totalPeople}</div>
-                    <div>Personen gesamt</div>
+                    <div>Personen im Filter</div>
                 </div>
                 <div class="stat-card">
                     <div style="font-size: 2em; font-weight: bold;">${thisMonth}</div>
                     <div>Geburtstage diesen Monat</div>
                 </div>
                 <div class="stat-card">
-                    <div style="font-size: 2em; font-weight: bold;">${data.groups.length}</div>
-                    <div>Bereiche</div>
+                    <div style="font-size: 2em; font-weight: bold;">${multiArea}</div>
+                    <div>Personen in mehreren Bereichen</div>
                 </div>
             `;
         }
@@ -550,14 +658,17 @@
               .sort((a, b) => a.daysUntil - b.daysUntil);
             
             if (upcomingBirthdays.length > 0) {
-                let html = '<h3>🎉 Kommende Geburtstage (30 Tage)</h3>';
+                let html = '<h3>Kommende Geburtstage (30 Tage)</h3>';
                 upcomingBirthdays.forEach(person => {
-                    let dayText = person.daysUntil === 0 ? '🎂 HEUTE!' : 
+                    let dayText = person.daysUntil === 0 ? 'HEUTE!' : 
                                   person.daysUntil === 1 ? 'Morgen' : 
                                   `in ${person.daysUntil} Tagen`;
                     
                     html += `<div style="margin-bottom: 10px;">
-                        <strong>${person.name}</strong> (${person.group}) - wird ${person.age} Jahre - ${dayText}
+                        <strong>${person.name}</strong> - wird ${person.age} Jahre - ${dayText}
+                        <div class="area-tags">
+                            ${person.groups ? person.groups.map(g => `<span class="area-tag">${g}</span>`).join('') : ''}
+                        </div>
                     </div>`;
                 });
                 upcoming.innerHTML = html;
@@ -593,17 +704,19 @@
                 
                 html += `
                     <div class="birthday-item">
-                        <div>
+                        <div style="flex: 1;">
                             <div style="font-weight: 600; font-size: 1.1em;">${person.name}</div>
-                            <div>📅 ${dateStr} ${year}</div>
-                            <div style="color: #667eea;">Bereich: ${person.group}</div>
-                            ${person.email ? `<div>✉️ ${person.email}</div>` : ''}
-                            ${person.phone ? `<div>📞 ${person.phone}</div>` : ''}
-                            ${person.notes ? `<div>📝 ${person.notes}</div>` : ''}
+                            <div>Datum: ${dateStr} ${year}</div>
+                            <div class="area-tags">
+                                ${person.groups ? person.groups.map(g => `<span class="area-tag">${g}</span>`).join('') : '<span class="area-tag">Allgemein</span>'}
+                            </div>
+                            ${person.email ? `<div>Email: ${person.email}</div>` : ''}
+                            ${person.phone ? `<div>Tel: ${person.phone}</div>` : ''}
+                            ${person.notes ? `<div>Notiz: ${person.notes}</div>` : ''}
                         </div>
                         <div>
-                            <button class="btn btn-secondary" onclick="editPerson(${person.id})">✏️</button>
-                            <button class="btn btn-danger" onclick="deletePerson(${person.id})">🗑️</button>
+                            <button class="btn btn-secondary" onclick="editPerson(${person.id})">Bearbeiten</button>
+                            <button class="btn btn-danger" onclick="deletePerson(${person.id})">Löschen</button>
                         </div>
                     </div>
                 `;
@@ -619,10 +732,14 @@
             // Fülle Formular aus
             document.getElementById('personName').value = person.name;
             document.getElementById('personBirthdate').value = person.birthdate;
-            document.getElementById('personGroup').value = person.group || 'Allgemein';
             document.getElementById('personEmail').value = person.email || '';
             document.getElementById('personPhone').value = person.phone || '';
             document.getElementById('personNotes').value = person.notes || '';
+            
+            // Setze Checkboxen
+            document.querySelectorAll('#personGroups input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = person.groups && person.groups.includes(checkbox.value);
+            });
             
             // Lösche alte Person
             data.people = data.people.filter(p => p.id !== id);
@@ -663,13 +780,13 @@
             let html = '<h3>Vorhandene Bereiche:</h3>';
             
             data.groups.forEach(group => {
-                const count = data.people.filter(p => p.group === group).length;
-                const canDelete = group !== 'Allgemein' && count === 0;
+                // Zähle Personen die diesem Bereich angehören
+                const count = data.people.filter(p => p.groups && p.groups.includes(group)).length;
                 
                 html += `
                     <div style="padding: 15px; background: #f8f9fa; margin-bottom: 10px; border-radius: 5px;">
                         <strong>${group}</strong> (${count} Personen)
-                        ${canDelete ? `<button class="btn btn-danger" style="float: right;" onclick="deleteGroup('${group}')">Löschen</button>` : ''}
+                        ${count === 0 ? `<button class="btn btn-danger" style="float: right;" onclick="deleteGroup('${group}')">Löschen</button>` : ''}
                     </div>
                 `;
             });
@@ -678,15 +795,10 @@
         }
 
         function deleteGroup(groupName) {
-            if (groupName === 'Allgemein') {
-                alert('Der Bereich "Allgemein" kann nicht gelöscht werden.');
-                return;
-            }
-            
-            const peopleInGroup = data.people.filter(p => p.group === groupName).length;
+            const peopleInGroup = data.people.filter(p => p.groups && p.groups.includes(groupName)).length;
             
             if (peopleInGroup > 0) {
-                alert(`Bereich enthält ${peopleInGroup} Person(en). Bitte erst alle Personen löschen oder verschieben.`);
+                alert(`Bereich enthält ${peopleInGroup} Person(en). Bitte erst alle Personen aus diesem Bereich entfernen.`);
                 return;
             }
             
@@ -695,7 +807,7 @@
             initializeGroups();
         }
 
-        // FLEXIBLER IMPORT
+        // IMPORT/EXPORT mit Multi-Bereich Support und Umlaut-Fix
         function handleFileImport(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -706,23 +818,22 @@
             
             reader.onload = function(event) {
                 try {
-                    const csv = event.target.result;
-                    const lines = csv.split(/\r?\n/).filter(line => line.trim());
+                    const text = event.target.result;
+                    const lines = text.split(/\r?\n/).filter(line => line.trim());
                     let imported = 0;
                     let skipped = 0;
-                    let previewHTML = '<h4>Import-Vorschau:</h4><table><tr><th>Name</th><th>Geburtsdatum</th><th>Bereich</th><th>Status</th></tr>';
+                    let previewHTML = '<h4>Import-Vorschau:</h4><table><tr><th>Name</th><th>Geburtsdatum</th><th>Bereiche</th><th>Status</th></tr>';
                     
                     for (let i = 0; i < lines.length; i++) {
                         const line = lines[i].trim();
                         if (!line) continue;
                         
-                        // Überspringe Header-Zeilen
+                        // Überspringe Header
                         if (i === 0 && line.toLowerCase().includes('name')) continue;
                         
-                        // Trenne nach Komma, Semikolon oder Tab
-                        const cols = line.split(/[,;\t]/);
+                        // CSV parsen (beachte Anführungszeichen)
+                        const cols = parseCSVLine(line);
                         
-                        // Mindestanforderung: Name und Geburtsdatum
                         const name = cols[0] ? cols[0].trim() : '';
                         const birthdate = cols[1] ? formatDateForInput(cols[1].trim()) : '';
                         
@@ -732,31 +843,39 @@
                             continue;
                         }
                         
-                        // Optionale Felder
-                        const group = cols[2] ? cols[2].trim() : 'Allgemein';
-                        const email = cols[3] ? cols[3].trim() : '';
-                        const phone = cols[4] ? cols[4].trim() : '';
-                        const notes = cols[5] ? cols[5].trim() : '';
+                        // Bereiche mit Semikolon getrennt
+                        let groups = [];
+                        if (cols[2]) {
+                            groups = cols[2].split(';').map(g => g.trim()).filter(g => g);
+                            
+                            // Füge neue Bereiche hinzu
+                            groups.forEach(g => {
+                                if (!data.groups.includes(g)) {
+                                    data.groups.push(g);
+                                }
+                            });
+                        }
                         
-                        // Person erstellen
+                        if (groups.length === 0) {
+                            groups = ['Allgemein'];
+                            if (!data.groups.includes('Allgemein')) {
+                                data.groups.push('Allgemein');
+                            }
+                        }
+                        
                         const person = {
                             id: Date.now() + i,
                             name: name,
                             birthdate: birthdate,
-                            group: group || 'Allgemein',
-                            email: email,
-                            phone: phone,
-                            notes: notes
+                            groups: groups,
+                            email: cols[3] ? cols[3].trim() : '',
+                            phone: cols[4] ? cols[4].trim() : '',
+                            notes: cols[5] ? cols[5].trim() : ''
                         };
-                        
-                        // Füge Bereich hinzu falls nicht vorhanden
-                        if (!data.groups.includes(person.group)) {
-                            data.groups.push(person.group);
-                        }
                         
                         data.people.push(person);
                         imported++;
-                        previewHTML += `<tr><td>${name}</td><td>${birthdate}</td><td>${group}</td><td style="color:green;">✓ Importiert</td></tr>`;
+                        previewHTML += `<tr><td>${name}</td><td>${birthdate}</td><td>${groups.join(', ')}</td><td style="color:green;">OK</td></tr>`;
                     }
                     
                     previewHTML += '</table>';
@@ -766,8 +885,8 @@
                     updateDisplay();
                     
                     status.innerHTML = `<div style="padding:10px;background:#d4edda;color:#155724;border-radius:5px;">
-                        ✓ ${imported} Personen erfolgreich importiert!
-                        ${skipped > 0 ? `<br>⚠️ ${skipped} Zeilen übersprungen (fehlende Pflichtfelder)` : ''}
+                        Erfolgreich: ${imported} Personen importiert!
+                        ${skipped > 0 ? `<br>Warnung: ${skipped} Zeilen übersprungen` : ''}
                     </div>`;
                     
                     preview.innerHTML = previewHTML;
@@ -775,17 +894,69 @@
                     
                 } catch (err) {
                     status.innerHTML = `<div style="padding:10px;background:#f8d7da;color:#721c24;border-radius:5px;">
-                        ❌ Fehler beim Import: ${err.message}
+                        Fehler: ${err.message}
                     </div>`;
                 }
             };
             
-            reader.readAsText(file, 'UTF-8');
+            // Wichtig: UTF-8 mit BOM Support
+            // Versuche verschiedene Encodings
+            const tryReadFile = () => {
+                const reader2 = new FileReader();
+                reader2.onload = function(e) {
+                    // Konvertiere zu sauberem String
+                    let text = e.target.result;
+                    // Entferne BOM wenn vorhanden
+                    if (text.charCodeAt(0) === 0xFEFF) {
+                        text = text.substr(1);
+                    }
+                    // Ersetze häufige fehlerhafte Umlaute
+                    text = text.replace(/Ã¤/g, 'ä')
+                              .replace(/Ã¶/g, 'ö')
+                              .replace(/Ã¼/g, 'ü')
+                              .replace(/Ã„/g, 'Ä')
+                              .replace(/Ã–/g, 'Ö')
+                              .replace(/Ãœ/g, 'Ü')
+                              .replace(/ÃŸ/g, 'ß')
+                              .replace(/â€™/g, "'")
+                              .replace(/â€"/g, '-')
+                              .replace(/â€œ/g, '"')
+                              .replace(/â€/g, '"');
+                    
+                    // Setze bereinigten Text
+                    event.target.result = text;
+                };
+                reader2.readAsText(file);
+            };
+            tryReadFile();
+            return;
             e.target.value = '';
+        }
+        
+        // CSV-Zeile parsen (beachte Anführungszeichen)
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            
+            return result.map(s => s.replace(/^"(.*)"$/, '$1').trim());
         }
 
         function formatDateForInput(dateStr) {
-            // Entferne Leerzeichen
             dateStr = dateStr.trim();
             
             // Verschiedene Datumsformate unterstützen
@@ -793,14 +964,13 @@
                 /(\d{1,2})\.(\d{1,2})\.(\d{4})/,  // DD.MM.YYYY
                 /(\d{1,2})\/(\d{1,2})\/(\d{4})/,  // DD/MM/YYYY
                 /(\d{1,2})-(\d{1,2})-(\d{4})/,    // DD-MM-YYYY
-                /(\d{4})-(\d{1,2})-(\d{1,2})/,    // YYYY-MM-DD
-                /(\d{4})\/(\d{1,2})\/(\d{1,2})/   // YYYY/MM/DD
+                /(\d{4})-(\d{1,2})-(\d{1,2})/     // YYYY-MM-DD
             ];
             
             for (let format of formats) {
                 const match = dateStr.match(format);
                 if (match) {
-                    if (format === formats[3] || format === formats[4]) {
+                    if (format === formats[3]) {
                         // YYYY-MM-DD Format
                         return `${match[1]}-${match[2].padStart(2,'0')}-${match[3].padStart(2,'0')}`;
                     } else {
@@ -810,20 +980,24 @@
                 }
             }
             
-            // Falls kein Format passt, versuche es direkt
             return dateStr;
         }
 
         function exportData() {
-            const csv = ['Name,Geburtsdatum,Bereich,Email,Telefon,Notizen'];
+            // BOM für UTF-8 (wichtig für Excel)
+            const BOM = '\uFEFF';
+            const csv = ['Name,Geburtsdatum,Bereiche,Email,Telefon,Notizen'];
             
             data.people.forEach(person => {
                 const bDate = new Date(person.birthdate);
                 const dateStr = `${bDate.getDate().toString().padStart(2,'0')}.${(bDate.getMonth()+1).toString().padStart(2,'0')}.${bDate.getFullYear()}`;
-                csv.push(`"${person.name}","${dateStr}","${person.group || 'Allgemein'}","${person.email || ''}","${person.phone || ''}","${person.notes || ''}"`);
+                const groupsStr = person.groups ? person.groups.join(';') : 'Allgemein';
+                
+                csv.push(`"${person.name}","${dateStr}","${groupsStr}","${person.email || ''}","${person.phone || ''}","${person.notes || ''}"`);
             });
             
-            const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            // Mit BOM für korrekte Umlaut-Darstellung in Excel
+            const blob = new Blob([BOM + csv.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'BirthdayManager_Export_' + new Date().toISOString().split('T')[0] + '.csv';
@@ -831,52 +1005,50 @@
         }
 
         function downloadTemplate() {
-            const csv = 'Name,Geburtsdatum,Bereich,Email,Telefon,Notizen\n' +
-                       'Max Mustermann,15.03.1990,Verein,max@example.com,+49123456789,Vorstand\n' +
-                       'Erika Musterfrau,22.07.1985,CDU,erika@example.com,+49987654321,Mitglied\n' +
-                       'Hans Schmidt,01.01.1980,Familie,,+49555123456,Cousin';
+            const BOM = '\uFEFF';
+            const csv = 'Name,Geburtsdatum,Bereiche,Email,Telefon,Notizen\r\n' +
+                       'Max Müller,15.03.1990,Familie;Verein,max@example.com,+49123456789,Vorstand\r\n' +
+                       'Sissy Hägele,22.07.1985,CDU;Arbeit,sissy@example.com,+49987654321,Kollegin\r\n' +
+                       'Anna Schröder,01.01.1980,Familie;Freunde;Nachbarn,,+49555123456,Beste Freundin';
             
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'BirthdayManager_Vorlage.csv';
             link.click();
         }
 
-        function downloadMinimalTemplate() {
-            const csv = 'Name,Geburtsdatum\n' +
-                       'Max Mustermann,15.03.1990\n' +
-                       'Erika Musterfrau,22.07.1985\n' +
-                       'Hans Schmidt,01.01.1980';
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'BirthdayManager_Minimal_Vorlage.csv';
-            link.click();
-        }
-
         function generateReminders() {
             const output = document.getElementById('reminderOutput');
             const today = new Date();
+            const selectedGroup = document.getElementById('reminderGroup').value;
             
-            const todayBirthdays = data.people.filter(person => {
+            let todayBirthdays = data.people.filter(person => {
                 const bDate = new Date(person.birthdate);
                 return bDate.getDate() === today.getDate() && bDate.getMonth() === today.getMonth();
             });
             
+            // Filter nach Bereich wenn ausgewählt
+            if (selectedGroup !== 'all') {
+                todayBirthdays = todayBirthdays.filter(p => p.groups && p.groups.includes(selectedGroup));
+            }
+            
             if (todayBirthdays.length === 0) {
-                output.innerHTML = '<p>Keine Geburtstage heute.</p>';
+                output.innerHTML = '<p>Keine Geburtstage heute im gewählten Bereich.</p>';
                 return;
             }
             
-            let html = '<h3>🎂 Heutige Geburtstage:</h3>';
+            let html = '<h3>Heutige Geburtstage:</h3>';
             todayBirthdays.forEach(person => {
                 const age = today.getFullYear() - new Date(person.birthdate).getFullYear();
+                
                 html += `<div style="padding: 10px; background: #f8f9fa; margin-bottom: 10px; border-radius: 5px;">
-                    <strong>${person.name}</strong> wird ${age} Jahre (${person.group})
-                    ${person.phone ? `<br>📞 ${person.phone}` : ''}
-                    ${person.email ? `<br>✉️ ${person.email}` : ''}
+                    <strong>${person.name}</strong> wird ${age} Jahre
+                    <div class="area-tags" style="margin-top: 5px;">
+                        ${person.groups ? person.groups.map(g => `<span class="area-tag">${g}</span>`).join('') : ''}
+                    </div>
+                    ${person.phone ? `<br>Tel: ${person.phone}` : ''}
+                    ${person.email ? `<br>Email: ${person.email}` : ''}
                 </div>`;
             });
             
@@ -886,25 +1058,35 @@
         function generateWeekReminders() {
             const output = document.getElementById('reminderOutput');
             const today = new Date();
+            const selectedGroup = document.getElementById('reminderGroup').value;
             const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
             
-            const weekBirthdays = data.people.filter(person => {
+            let weekBirthdays = data.people.filter(person => {
                 const bDate = new Date(person.birthdate);
                 const thisYear = new Date(today.getFullYear(), bDate.getMonth(), bDate.getDate());
                 return thisYear >= today && thisYear <= nextWeek;
             });
             
-            let html = '<h3>📅 Geburtstage diese Woche:</h3>';
+            // Filter nach Bereich
+            if (selectedGroup !== 'all') {
+                weekBirthdays = weekBirthdays.filter(p => p.groups && p.groups.includes(selectedGroup));
+            }
+            
+            let html = '<h3>Geburtstage diese Woche:</h3>';
             
             if (weekBirthdays.length === 0) {
                 html += '<p>Keine Geburtstage in den nächsten 7 Tagen.</p>';
             } else {
                 weekBirthdays.forEach(person => {
                     const bDate = new Date(person.birthdate);
-                    const age = today.getFullYear() - bDate.getFullYear();
+                    const age = today.getFullYear() - bDate.getFullYear() + 1;
+                    
                     html += `<div style="padding: 10px; background: #f8f9fa; margin-bottom: 10px; border-radius: 5px;">
                         <strong>${person.name}</strong> - ${bDate.toLocaleDateString('de-DE', {day: '2-digit', month: 'long'})}
-                        <br>Wird ${age + 1} Jahre (${person.group})
+                        <br>Wird ${age} Jahre
+                        <div class="area-tags" style="margin-top: 5px;">
+                            ${person.groups ? person.groups.map(g => `<span class="area-tag">${g}</span>`).join('') : ''}
+                        </div>
                     </div>`;
                 });
             }
@@ -927,36 +1109,54 @@
         async function checkWhatsAppServer() {
             try {
                 const response = await fetch(WHATSAPP_SERVER_URL + '/status');
-                document.getElementById('whatsappStatus').textContent = '✅ Server Online - Bereit';
-                document.getElementById('whatsappStatus').style.background = '#d4edda';
-                document.getElementById('whatsappStatus').style.color = '#155724';
+                const status = document.getElementById('whatsappStatus');
+                status.textContent = 'Server Online - Bereit';
+                status.style.background = '#d4edda';
+                status.style.color = '#155724';
             } catch (e) {
-                document.getElementById('whatsappStatus').textContent = '❌ Server Offline - Bitte starten';
-                document.getElementById('whatsappStatus').style.background = '#f8d7da';
-                document.getElementById('whatsappStatus').style.color = '#721c24';
+                const status = document.getElementById('whatsappStatus');
+                status.textContent = 'Server Offline - Bitte starten';
+                status.style.background = '#f8d7da';
+                status.style.color = '#721c24';
             }
         }
 
         function collectBirthdays() {
             const today = new Date();
-            let message = `🎂 GEBURTSTAGS-ERINNERUNG\n${today.toLocaleDateString('de-DE')}\n\n`;
+            const selectedGroup = document.getElementById('whatsappGroup').value;
+            let message = `GEBURTSTAGS-ERINNERUNG\n${today.toLocaleDateString('de-DE')}\n`;
             
-            const todayBirthdays = data.people.filter(person => {
+            if (selectedGroup !== 'all') {
+                message += `Bereich: ${selectedGroup}\n`;
+            }
+            message += '\n';
+            
+            let todayBirthdays = data.people.filter(person => {
                 const bDate = new Date(person.birthdate);
                 return bDate.getDate() === today.getDate() && bDate.getMonth() === today.getMonth();
             });
             
-            if (todayBirthdays.length > 0) {
-                message += '🎉 HEUTE Geburtstag:\n';
-                todayBirthdays.forEach(person => {
-                    const age = today.getFullYear() - new Date(person.birthdate).getFullYear();
-                    message += `• ${person.name} wird ${age} Jahre (${person.group})\n`;
-                });
-            } else {
-                message += 'Keine Geburtstage heute.\n';
+            // Filter nach Bereich
+            if (selectedGroup !== 'all') {
+                todayBirthdays = todayBirthdays.filter(p => p.groups && p.groups.includes(selectedGroup));
             }
             
-            message += '\n👉 Bitte alle gratulieren!';
+            if (todayBirthdays.length > 0) {
+                message += 'HEUTE Geburtstag:\n';
+                todayBirthdays.forEach(person => {
+                    const age = today.getFullYear() - new Date(person.birthdate).getFullYear();
+                    const groupsText = person.groups ? ` (${person.groups.join(', ')})` : '';
+                    message += `- ${person.name} wird ${age} Jahre${groupsText}\n`;
+                });
+            } else {
+                message += 'Keine Geburtstage heute';
+                if (selectedGroup !== 'all') {
+                    message += ` im Bereich ${selectedGroup}`;
+                }
+                message += '.\n';
+            }
+            
+            message += '\nBitte alle gratulieren!';
             
             document.getElementById('whatsappMessage').value = message;
         }
@@ -972,14 +1172,15 @@
                 });
                 
                 if (response.ok) {
-                    alert('✅ WhatsApp öffnet sich!\n\n1. Gruppe wählen\n2. STRG+V\n3. Enter');
+                    alert('WhatsApp öffnet sich!\n\n1. Gruppe wählen\n2. STRG+V\n3. Enter');
                     toggleWhatsAppPanel();
                 }
             } catch (e) {
-                alert('❌ Server nicht erreichbar!\n\nBitte starten Sie server.ps1');
+                alert('Server nicht erreichbar!\n\nBitte starten Sie server.ps1');
             }
         }
 
+        // Auto-Check alle 10 Sekunden
         setInterval(checkWhatsAppServer, 10000);
     </script>
 </body>

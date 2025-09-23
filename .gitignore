@@ -11,3 +11,5 @@ backup_*/
 # System files
 Thumbs.db
 .DS_Store
+*.html
+BirthdayManager.html
