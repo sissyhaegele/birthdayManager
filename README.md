@@ -3,31 +3,36 @@
 Eine moderne Web-Anwendung zur Verwaltung von Geburtstagen mit WhatsApp-Integration.
 
 ## Features
-- âœ… **Bereiche** statt Gruppen (Verein, CDU, Familie, Freunde, etc.)
-- âœ… **WhatsApp Integration** - Direkte Nachrichten an Gruppen
-- âœ… **Lokale Speicherung** - Keine Server erforderlich
-- âœ… **Erinnerungen** - Automatische Benachrichtigungen
+- Bereiche statt Gruppen (Verein, CDU, Familie, Freunde, etc.)
+- WhatsApp Integration - Direkte Nachrichten an Gruppen
+- Lokale Speicherung - Keine Server erforderlich
+- Erinnerungen - Automatische Benachrichtigungen
+- Multi-Bereich Support - Eine Person kann mehreren Bereichen zugeordnet werden
+- Import/Export - CSV mit korrekter Umlaut-Unterstützung
 
 ## Installation
-1. Server starten: `.\server.ps1`
-2. App Ã¶ffnen: `BirthdayManager.html`
+1. Server starten: .\server.ps1
+2. App öffnen: BirthdayManager.html
 
 ## Verwendung
 1. Bereiche anlegen
-2. Personen hinzufÃ¼gen
-3. WhatsApp-Button fÃ¼r Nachrichten nutzen
+2. Personen hinzufügen (können mehreren Bereichen zugeordnet werden)
+3. WhatsApp-Button für Nachrichten nutzen
+
+## CSV-Import Format
+Bereiche mit Semikolon (;) trennen für Multi-Bereich-Zuordnung.
 
 ## WhatsApp-Integration
-Der WhatsApp-Server muss laufen (server.ps1) fÃ¼r die Integration.
+Der WhatsApp-Server muss laufen (server.ps1) für die Integration.
 
 ## Technologie
 - HTML5/CSS3/JavaScript
 - PowerShell Server
-- LocalStorage fÃ¼r Daten
+- LocalStorage für Daten
+- UTF-8 Encoding
+
+## Autor
+Sissy Hägele
 
 ## Lizenz
 MIT
-
-## Autor
-Sissy Haegele
-
