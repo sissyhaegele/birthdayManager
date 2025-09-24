@@ -36,3 +36,15 @@ Sissy Hägele
 
 ## Lizenz
 MIT
+
+## Update September 2025
+
+### Neue Features:
+- SQLite Datenbank-Support
+- Hybrid-Modus (automatischer Wechsel zwischen LocalStorage und Datenbank)
+- Verbesserte Server-Architektur
+- Ein-Klick-Start über Desktop-Verknüpfung
+
+### Server-Ports:
+- Port 3000: Datenbank-Server
+- Port 9999: WhatsApp-Server
