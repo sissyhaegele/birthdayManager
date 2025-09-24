@@ -2653,6 +2653,442 @@ console.log('✅ Bereichsverwaltung mit Icon-Buttons geladen');
 <script src="ui-improvements.js"></script>    
     <!-- UX Improvements -->
     <script src="ux-improvements-complete.js"></script>
+
+<!-- PERMANENTE UX VERBESSERUNGEN -->
+<script>
+(function() {
+    'use strict';
+    
+    console.log('🎨 Lade permanente UX-Verbesserungen...');
+    
+    // ========================================
+    // CSS STYLES
+    // ========================================
+    const styles = document.createElement('style');
+    styles.innerHTML = `
+        /* Toolbar Styles */
+        #personToolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Dialog Overlay */
+        #personDialogOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 9998;
+        }
+        
+        /* Dialog */
+        #personDialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 9999;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+        
+        .dialog-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dialog-body {
+            padding: 30px;
+            max-height: calc(90vh - 180px);
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #f9fafb;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .groups-container {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .group-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .group-item:hover {
+            background: #f3f4f6;
+            transform: translateX(5px);
+        }
+        
+        .group-item.checked {
+            background: #ede9fe;
+            border: 1px solid #667eea;
+        }
+        
+        .group-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .group-item label {
+            cursor: pointer;
+            user-select: none;
+            font-size: 15px;
+            color: #374151;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dialog-footer {
+            padding: 20px 30px;
+            background: #f9fafb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        /* Icon Buttons */
+        .icon-btn-edit {
+            width: 36px !important;
+            height: 36px !important;
+            padding: 0 !important;
+            background: #3498db !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 50% !important;
+            cursor: pointer !important;
+            font-size: 18px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .icon-btn-delete {
+            width: 36px !important;
+            height: 36px !important;
+            padding: 0 !important;
+            background: #e74c3c !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 50% !important;
+            cursor: pointer !important;
+            font-size: 18px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+    `;
+    document.head.appendChild(styles);
+    
+    // ========================================
+    // HAUPTFUNKTIONEN
+    // ========================================
+    
+    // 1. Entferne Tab "Person hinzufügen"
+    function removeAddPersonTab() {
+        document.querySelectorAll('.tab-btn, .nav-link, button, a').forEach(element => {
+            const text = element.textContent.trim();
+            if ((text.includes('Person hinzufügen') || text.includes('Neue Person')) &&
+                (element.closest('.tab-navigation') || element.closest('.nav-tabs'))) {
+                element.style.display = 'none';
+                const parent = element.closest('li');
+                if (parent) parent.style.display = 'none';
+            }
+        });
+    }
+    
+    // 2. Füge Toolbar hinzu
+    function addToolbar() {
+        setTimeout(() => {
+            const peopleTab = document.querySelector('#people-tab') || 
+                             document.querySelector('#people-view') ||
+                             document.querySelector('.tab-content.active');
+            
+            if (peopleTab && !document.getElementById('personToolbar')) {
+                const personCount = window.data?.people?.length || 0;
+                
+                const toolbar = document.createElement('div');
+                toolbar.id = 'personToolbar';
+                toolbar.innerHTML = `
+                    <div style="color: white;">
+                        <h2 style="margin: 0; font-size: 24px;">👥 Personen-Übersicht</h2>
+                        <p style="margin: 5px 0; opacity: 0.9;">` + personCount + ` Personen</p>
+                    </div>
+                    <button onclick="openPersonDialog()" 
+                            style="background: white; color: #667eea; border: none; 
+                                   padding: 12px 24px; border-radius: 25px; 
+                                   cursor: pointer; font-size: 16px; font-weight: 500;">
+                        ➕ Neue Person
+                    </button>
+                `;
+                
+                const table = peopleTab.querySelector('table');
+                if (table) {
+                    table.parentNode.insertBefore(toolbar, table);
+                } else {
+                    peopleTab.insertBefore(toolbar, peopleTab.firstChild);
+                }
+            }
+        }, 500);
+    }
+    
+    // 3. Erstelle Dialog
+    function createDialog() {
+        if (!document.getElementById('personDialog')) {
+            const availableGroups = ['Familie', 'Freunde', 'Arbeit', 'Verein', 'Nachbarn', 'Sport', 'Hobby'];
+            
+            const dialogHTML = `
+                <div id="personDialogOverlay" onclick="closePersonDialog()"></div>
+                <div id="personDialog">
+                    <div class="dialog-header">
+                        <h2 style="margin: 0;">
+                            <span id="dialogIcon">➕</span>
+                            <span id="dialogTitle">Neue Person anlegen</span>
+                        </h2>
+                        <button style="background: transparent; border: none; color: white; 
+                                       font-size: 28px; cursor: pointer;" 
+                                onclick="closePersonDialog()">✕</button>
+                    </div>
+                    
+                    <div class="dialog-body">
+                        <form id="personDialogForm" onsubmit="savePersonFromDialog(event); return false;">
+                            <div class="form-group">
+                                <label class="form-label">👤 Name *</label>
+                                <input type="text" id="dialogName" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">📅 Geburtsdatum *</label>
+                                <input type="date" id="dialogBirthdate" class="form-control" required>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div class="form-group">
+                                    <label class="form-label">📱 Telefon</label>
+                                    <input type="tel" id="dialogPhone" class="form-control">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">✉️ E-Mail</label>
+                                    <input type="email" id="dialogEmail" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">🏷️ Bereiche</label>
+                                <div class="groups-container">
+                                    ` + availableGroups.map(g => `
+                                        <div class="group-item" data-group="` + g + `">
+                                            <input type="checkbox" id="group_` + g + `" 
+                                                   name="groups" value="` + g + `"
+                                                   onchange="toggleGroupCheck(this)">
+                                            <label for="group_` + g + `">` + g + `</label>
+                                        </div>
+                                    `).join('') + `
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">📝 Notizen</label>
+                                <textarea id="dialogNotes" class="form-control" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="dialog-footer">
+                        <button class="btn btn-secondary" onclick="closePersonDialog()">
+                            Abbrechen
+                        </button>
+                        <button type="submit" form="personDialogForm" class="btn btn-primary">
+                            💾 Speichern
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', dialogHTML);
+        }
+    }
+    
+    // 4. Konvertiere Buttons zu Icons
+    function convertButtons() {
+        document.querySelectorAll('button').forEach(btn => {
+            const onclick = btn.getAttribute('onclick') || '';
+            const text = btn.textContent;
+            
+            if (onclick.includes('editPerson') || text.includes('Bearbeiten')) {
+                btn.className = 'icon-btn-edit';
+                btn.innerHTML = '✏️';
+                btn.title = 'Bearbeiten';
+            } else if (onclick.includes('deletePerson') || text.includes('Löschen')) {
+                btn.className = 'icon-btn-delete';
+                btn.innerHTML = '🗑️';
+                btn.title = 'Löschen';
+            }
+        });
+    }
+    
+    // ========================================
+    // GLOBALE FUNKTIONEN
+    // ========================================
+    window.openPersonDialog = function(personId) {
+        const dialog = document.getElementById('personDialog');
+        const overlay = document.getElementById('personDialogOverlay');
+        if (dialog) dialog.style.display = 'block';
+        if (overlay) overlay.style.display = 'block';
+    };
+    
+    window.closePersonDialog = function() {
+        const dialog = document.getElementById('personDialog');
+        const overlay = document.getElementById('personDialogOverlay');
+        if (dialog) dialog.style.display = 'none';
+        if (overlay) overlay.style.display = 'none';
+    };
+    
+    window.savePersonFromDialog = function(event) {
+        event.preventDefault();
+        const selectedGroups = [];
+        document.querySelectorAll('input[name="groups"]:checked').forEach(cb => {
+            selectedGroups.push(cb.value);
+        });
+        
+        const person = {
+            id: Date.now(),
+            name: document.getElementById('dialogName').value,
+            birthdate: document.getElementById('dialogBirthdate').value,
+            phone: document.getElementById('dialogPhone').value,
+            email: document.getElementById('dialogEmail').value,
+            notes: document.getElementById('dialogNotes').value,
+            groups: selectedGroups
+        };
+        
+        console.log('Speichere Person mit Bereichen:', selectedGroups);
+        
+        // Speichern...
+        closePersonDialog();
+        location.reload();
+    };
+    
+    window.toggleGroupCheck = function(checkbox) {
+        const item = checkbox.closest('.group-item');
+        if (checkbox.checked) {
+            item.classList.add('checked');
+        } else {
+            item.classList.remove('checked');
+        }
+    };
+    
+    // ========================================
+    // INITIALISIERUNG
+    // ========================================
+    function initUX() {
+        removeAddPersonTab();
+        addToolbar();
+        createDialog();
+        convertButtons();
+    }
+    
+    // Starte wenn DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initUX);
+    } else {
+        initUX();
+    }
+    
+    // Wiederhole für dynamische Inhalte
+    setInterval(() => {
+        removeAddPersonTab();
+        convertButtons();
+    }, 1000);
+    
+    console.log('✅ Permanente UX-Verbesserungen aktiv!');
+})();
+</script>
+<!-- ENDE UX VERBESSERUNGEN -->
+
+    
+    <!-- Permanente UX Verbesserungen -->
+    <script src="birthday-manager-ux.js"></script>
 </body>
 </html>
 
@@ -2687,3 +3123,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Restlicher Code von oben...
 });
 </script>
+
+
