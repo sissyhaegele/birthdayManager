@@ -1,15 +1,32 @@
-﻿# Backup files
-*.backup*
-backup_*/
-*_BACKUP_*/
+﻿# Dependencies
+node_modules/
+package-lock.json
 
-# Temporary files
+# Database
+*.db
+*.db-journal
+
+# Backups
+backup/
+*.backup
+*_backup.*
+*_original.*
+
+# Temp files
 *.tmp
 *.log
-*.bak
+import.js
+setup.js
+check.js
+export_localstorage.txt
+localstorage_*.json
+synced_data.json
+sync_conflicts.log
 
-# System files
+# IDE
+.vscode/
+.idea/
+
+# OS
 Thumbs.db
 .DS_Store
-*.html
-BirthdayManager.html
