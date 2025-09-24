@@ -1,34 +1,20 @@
-{
-  "name": "birthday-manager-db",
-  "version": "2.0.0",
-  "description": "Birthday Manager mit SQLite Datenbank",
-  "main": "server_with_db.js",
-  "scripts": {
-    "start": "node server_with_db.js",
-    "dev": "nodemon server_with_db.js",
-    "install-deps": "npm install",
-    "setup": "npm install && node server_with_db.js"
-  },
-  "dependencies": {
-    "body-parser": "^1.20.3",
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "nodemailer": "^7.0.6",
-    "sqlite3": "^5.1.7"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "author": "Sissy Haegele",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sissyhaegele/birthdaymanager.git"
-  },
-  "keywords": [],
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/sissyhaegele/birthdaymanager/issues"
-  },
-  "homepage": "https://github.com/sissyhaegele/birthdaymanager#readme"
+﻿{
+    "name":  "birthday-manager",
+    "version":  "3.0.0",
+    "description":  "Birthday Manager with Multi-Channel Notifications",
+    "main":  "birthday-server.js",
+    "scripts":  {
+                    "start":  "node birthday-server.js",
+                    "comm":  "node communication-server.js",
+                    "both":  "concurrently \"node birthday-server.js\" \"node communication-server.js\"",
+                    "dev":  "node birthday-server.js",
+                    "preinstall":  "node check-yarn.js"
+                },
+    "dependencies":  {
+                         "express":  "^4.18.2",
+                         "sqlite3":  "^5.1.6",
+                         "cors":  "^2.8.5",
+                         "body-parser":  "^1.20.2",
+                         "concurrently":  "^8.2.0"
+                     }
 }
