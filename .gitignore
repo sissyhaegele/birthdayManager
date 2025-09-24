@@ -1,32 +1,41 @@
 ﻿# Dependencies
 node_modules/
-package-lock.json
+*.log
+npm-debug.log*
 
 # Database
 *.db
+*.sqlite
 *.db-journal
 
 # Backups
-backup/
-*.backup
-*_backup.*
-*_original.*
+Backups/
+*_backup_*.html
+*_backup_*.js
 
-# Temp files
-*.tmp
-*.log
-import.js
-setup.js
-check.js
-export_localstorage.txt
-localstorage_*.json
-synced_data.json
-sync_conflicts.log
+# Private/Sensitive
+.env
+config.json
+credentials.json
+
+# Test files
+test/
+*.test.js
+step*.txt
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS
-Thumbs.db
-.DS_Store
+# Temporary
+*.tmp
+*.temp
+temp/
+tmp/

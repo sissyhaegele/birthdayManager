@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -473,13 +473,159 @@
             <!-- Bereiche verwalten -->
             <div id="bereiche" class="tab-content">
                 <h2>Bereiche verwalten</h2>
-                <div class="form-group">
-                    <label for="newGroupName">Neuer Bereich:</label>
-                    <input type="text" id="newGroupName" placeholder="Bereichsname eingeben">
+                
+                <!-- Neuer Bereich hinzufügen -->
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3>Neuer Bereich hinzufügen</h3>
+                    <div class="form-group">
+                        <label for="newGroupName">Bereichsname:</label>
+                        <input type="text" id="newGroupName" placeholder="z.B. Familie, Verein, Arbeit...">
+                    </div>
+                    <button class="btn btn-success" onclick="addGroupWithConfig()">➕ Bereich hinzufügen</button>
                 </div>
-                <button class="btn" onclick="addGroup()">Bereich hinzufügen</button>
+                
+                <!-- Bereichsliste mit Konfiguration -->
                 <div id="groupsList" style="margin-top: 20px;"></div>
             </div>
+
+            <!-- Modal für Bereichs-Konfiguration -->
+            <div id="groupConfigModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000;">
+                <div style="background: white; width: 90%; max-width: 800px; margin: 50px auto; border-radius: 10px; padding: 30px; max-height: 80vh; overflow-y: auto;">
+                    <h2>⚙️ Bereich konfigurieren</h2>
+                    <div style="margin-bottom: 20px;">
+                    <label style="font-weight: bold;">Bereichsname:</label><br>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="groupConfigName" style="font-size: 1.3em; padding: 8px; border: 2px solid #667eea; border-radius: 5px; flex: 1;">
+                        <button class="btn btn-warning" onclick="renameGroup()">📝 Umbenennen</button>
+                    </div>
+                </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4>📱 WhatsApp-Konfiguration</h4>
+                        <div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <label>Modus:</label><br>
+                            <label><input type="radio" name="wa_mode" value="none" checked> Deaktiviert</label><br>
+                            <label><input type="radio" name="wa_mode" value="group"> Gruppenchat</label><br>
+                            <label><input type="radio" name="wa_mode" value="individual"> Einzelchats</label><br>
+                            <label><input type="radio" name="wa_mode" value="both"> Beides</label><br><br>
+                            
+                            <label>WhatsApp-Gruppenname:</label>
+                            <input type="text" id="wa_group_name" style="width: 100%; padding: 8px;" placeholder="z.B. Familie_Geburtstage">
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4>✉️ E-Mail-Konfiguration</h4>
+                        <div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <label><input type="checkbox" id="email_enabled"> E-Mail aktiviert</label><br><br>
+                            <label>E-Mail-Adressen (kommagetrennt):</label>
+                            <textarea id="email_addresses" style="width: 100%; height: 60px; padding: 8px;" placeholder="max@example.com, sissy@example.com"></textarea>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="saveGroupConfig()">💾 Speichern</button>
+                    <button class="btn btn-warning" onclick="testGroupMessage()">📤 Test-Nachricht</button>
+                    <button class="btn btn-danger" onclick="deleteGroup()">🗑️ Bereich löschen</button>
+                    <button class="btn btn-secondary" onclick="closeGroupConfig()">Abbrechen</button>
+                </div>
+            </div>
+
+            <script>
+            // Erweiterte Bereichsverwaltung
+            let currentConfigGroup = null;
+            
+            function addGroupWithConfig() {
+                const name = document.getElementById('newGroupName').value.trim();
+                if (!name) {
+                    alert('Bitte Bereichsnamen eingeben!');
+                    return;
+                }
+                if (data.groups.includes(name)) {
+                    alert('Bereich existiert bereits!');
+                    return;
+                }
+                data.groups.push(name);
+                saveData();
+                document.getElementById('newGroupName').value = '';
+                updateGroupsList();
+                openGroupConfig(name);
+            }
+            
+            function openGroupConfig(groupName) {
+                currentConfigGroup = groupName;
+                document.getElementById('groupConfigName').textContent = groupName;
+                
+                // Lade Config
+                const config = JSON.parse(localStorage.getItem('group_cfg_' + groupName) || '{}');
+                
+                // Setze Werte
+                const waMode = config.wa_mode || 'none';
+                document.querySelector('input[name="wa_mode"][value="' + waMode + '"]').checked = true;
+                document.getElementById('wa_group_name').value = config.wa_group || '';
+                document.getElementById('email_enabled').checked = config.email || false;
+                document.getElementById('email_addresses').value = config.email_addr || '';
+                
+                document.getElementById('groupConfigModal').style.display = 'block';
+            }
+            
+            function saveGroupConfig() {
+                if (!currentConfigGroup) return;
+                
+                const config = {
+                    wa_mode: document.querySelector('input[name="wa_mode"]:checked').value,
+                    wa_group: document.getElementById('wa_group_name').value,
+                    email: document.getElementById('email_enabled').checked,
+                    email_addr: document.getElementById('email_addresses').value
+                };
+                
+                localStorage.setItem('group_cfg_' + currentConfigGroup, JSON.stringify(config));
+                alert('Konfiguration gespeichert!');
+                closeGroupConfig();
+                updateGroupsList();
+            }
+            
+            function closeGroupConfig() {
+                document.getElementById('groupConfigModal').style.display = 'none';
+                currentConfigGroup = null;
+            }
+            
+            // Override updateGroupsList
+            const origUpdateGroupsList = window.updateGroupsList;
+            window.updateGroupsList = function() {
+                if (origUpdateGroupsList) origUpdateGroupsList();
+                
+                const list = document.getElementById('groupsList');
+                if (!list) return;
+                
+                let html = '<h3>Vorhandene Bereiche:</h3>';
+                data.groups.forEach(group => {
+                    const count = data.people.filter(p => p.groups && p.groups.includes(group)).length;
+                    const cfg = JSON.parse(localStorage.getItem('group_cfg_' + group) || '{}');
+                    
+                    let icons = [];
+                    if (cfg.wa_mode && cfg.wa_mode !== 'none') icons.push('📱');
+                    if (cfg.email) icons.push('✉️');
+                    
+                    html += '<div style="padding: 15px; background: #f8f9fa; margin-bottom: 10px; border-radius: 5px;">';
+                    html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
+                    html += '<div>';
+                    html += '<strong>' + group + '</strong> (' + count + ' Personen)<br>';
+                    if (icons.length > 0) {
+                        html += '<span style="font-size: 20px;">' + icons.join(' ') + '</span>';
+                        if (cfg.wa_group) html += ' <small>WA: ' + cfg.wa_group + '</small>';
+                    } else {
+                        html += '<small style="color: #999;">Nicht konfiguriert</small>';
+                    }
+                    html += '</div>';
+                    html += '<button class="btn btn-primary" onclick="openGroupConfig(\'' + group + '\')">⚙️ Konfigurieren</button>';
+                    if (count === 0) {
+                        html += '<button class="btn btn-danger" style="margin-left: 5px;" onclick="deleteGroup(\'' + group + '\')">🗑️</button>';
+                    }
+                    html += '</div></div>';
+                });
+                list.innerHTML = html;
+            };
+            </script>
 
             <!-- Erinnerungen -->
             <div id="reminders" class="tab-content">
@@ -1585,5 +1731,909 @@
         // Auto-Check alle 10 Sekunden
         setInterval(checkWhatsAppServer, 10000);
     </script>
+
+<!-- ===== KOMMUNIKATIONS-KONFIGURATION START ===== -->
+<style>
+.channel-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+}
+.channel-modal-content {
+    background: white;
+    width: 600px;
+    margin: 100px auto;
+    padding: 30px;
+    border-radius: 10px;
+}
+</style>
+
+<div id="channelConfigModal" class="channel-modal">
+    <div class="channel-modal-content">
+        <h2>Kommunikationskanäle konfigurieren</h2>
+        <h3 id="configGroupName" style="color: #667eea;"></h3>
+        <div style="margin: 20px 0;">
+            <h4>WhatsApp</h4>
+            <input type="checkbox" id="whatsapp_enabled"> Aktiviert<br>
+            <input type="text" id="whatsapp_group_id" placeholder="WhatsApp Gruppen-Name" style="width:100%; margin-top:10px; padding:8px;">
+        </div>
+        <div style="margin: 20px 0;">
+            <h4>E-Mail</h4>
+            <input type="checkbox" id="email_enabled"> Aktiviert<br>
+            <textarea id="email_addresses" placeholder="E-Mail Adressen (kommagetrennt)" style="width:100%; margin-top:10px; padding:8px; height:60px;"></textarea>
+        </div>
+        <button class="btn btn-success" onclick="saveChannelConfig()">Speichern</button>
+        <button class="btn btn-secondary" onclick="closeChannelConfig()">Abbrechen</button>
+    </div>
+</div>
+
+<script>
+// Kommunikations-Konfiguration
+            // Duplikat entfernt - currentConfigGroup bereits in Zeile 535 deklariert
+
+function configureChannels(groupName) {
+    currentConfigGroup = groupName;
+    document.getElementById('configGroupName').textContent = 'Bereich: ' + groupName;
+    
+    const saved = localStorage.getItem('comm_' + groupName);
+    if (saved) {
+        try {
+            const config = JSON.parse(saved);
+            document.getElementById('whatsapp_enabled').checked = config.wa || false;
+            document.getElementById('whatsapp_group_id').value = config.wa_id || '';
+            document.getElementById('email_enabled').checked = config.em || false;
+            document.getElementById('email_addresses').value = config.em_addr || '';
+        } catch(e) {}
+    }
+    
+    document.getElementById('channelConfigModal').style.display = 'block';
+}
+
+function saveChannelConfig() {
+    if (!currentConfigGroup) return;
+    
+    const config = {
+        wa: document.getElementById('whatsapp_enabled').checked,
+        wa_id: document.getElementById('whatsapp_group_id').value,
+        em: document.getElementById('email_enabled').checked,
+        em_addr: document.getElementById('email_addresses').value
+    };
+    
+    localStorage.setItem('comm_' + currentConfigGroup, JSON.stringify(config));
+    alert('Konfiguration für ' + currentConfigGroup + ' gespeichert!');
+    closeChannelConfig();
+}
+
+function closeChannelConfig() {
+    document.getElementById('channelConfigModal').style.display = 'none';
+    currentConfigGroup = null;
+}
+</script>
+<!-- ===== KOMMUNIKATIONS-KONFIGURATION ENDE ===== -->
+<script>
+// === GEBURTSTAGS-BENACHRICHTIGUNGS-SYSTEM ===
+
+// Gruppennachricht - nur Information
+function generateGroupReminder(birthdays, groupName) {
+    const today = new Date().toLocaleDateString('de-DE');
+    let message = `📅 GEBURTSTAGS-ERINNERUNG\n`;
+    message += `📍 Bereich: ${groupName}\n`;
+    message += `📆 Datum: ${today}\n`;
+    message += `━━━━━━━━━━━━━━━\n\n`;
+    
+    if (birthdays.length === 0) {
+        message += `Heute keine Geburtstage.\n`;
+    } else if (birthdays.length === 1) {
+        const person = birthdays[0];
+        const age = new Date().getFullYear() - new Date(person.birthdate).getFullYear();
+        message += `🎂 HEUTE Geburtstag:\n\n`;
+        message += `${person.name} wird ${age} Jahre\n`;
+        if (person.phone) message += `📞 ${person.phone}\n`;
+        if (person.email) message += `✉️ ${person.email}\n`;
+    } else {
+        message += `🎂 HEUTE ${birthdays.length} Geburtstage:\n\n`;
+        birthdays.forEach(person => {
+            const age = new Date().getFullYear() - new Date(person.birthdate).getFullYear();
+            message += `• ${person.name} (${age} Jahre)\n`;
+            if (person.phone) message += `  📞 ${person.phone}\n`;
+        });
+    }
+    
+    message += `\n━━━━━━━━━━━━━━━\n`;
+    message += `ℹ️ Bitte daran denken zu gratulieren!`;
+    
+    return message;
+}
+
+// Einzelnachricht - nur Information
+function generateIndividualReminder(birthdays, groupName, recipientName) {
+    const today = new Date().toLocaleDateString('de-DE');
+    let message = `Hallo${recipientName ? ' ' + recipientName : ''}! 👋\n\n`;
+    
+    message += `Geburtstags-Erinnerung für heute, ${today}:\n\n`;
+    
+    birthdays.forEach(person => {
+        const age = new Date().getFullYear() - new Date(person.birthdate).getFullYear();
+        message += `🎂 ${person.name} wird heute ${age} Jahre\n`;
+        if (person.phone && person.phone !== recipientName) {
+            message += `   Kontakt: ${person.phone}\n`;
+        }
+        message += `\n`;
+    });
+    
+    message += `Viele Grüße\nBirthday Manager`;
+    
+    return message;
+}
+
+// Wöchentliche Vorschau
+function generateWeeklyPreview(groupName) {
+    const today = new Date();
+    const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    
+    let message = `📅 WOCHENVORSCHAU GEBURTSTAGE\n`;
+    message += `Bereich: ${groupName}\n`;
+    message += `${today.toLocaleDateString('de-DE')} - ${nextWeek.toLocaleDateString('de-DE')}\n`;
+    message += `━━━━━━━━━━━━━━━\n\n`;
+    
+    const upcomingBirthdays = data.people.filter(person => {
+        if (!person.groups || !person.groups.includes(groupName)) return false;
+        
+        const bDate = new Date(person.birthdate);
+        const thisYear = new Date(today.getFullYear(), bDate.getMonth(), bDate.getDate());
+        
+        return thisYear >= today && thisYear <= nextWeek;
+    }).sort((a, b) => {
+        const dateA = new Date(a.birthdate);
+        const dateB = new Date(b.birthdate);
+        return dateA.getDate() - dateB.getDate();
+    });
+    
+    if (upcomingBirthdays.length === 0) {
+        message += `Keine Geburtstage in den nächsten 7 Tagen.\n`;
+    } else {
+        upcomingBirthdays.forEach(person => {
+            const bDate = new Date(person.birthdate);
+            const age = today.getFullYear() - bDate.getFullYear() + 1;
+            const datum = bDate.toLocaleDateString('de-DE', {day: '2-digit', month: 'long'});
+            
+            message += `📌 ${datum}: ${person.name} (wird ${age})\n`;
+        });
+    }
+    
+    return message;
+}
+
+// Override collectBirthdays
+window.collectBirthdays = function() {
+    const selectedGroup = document.getElementById('whatsappGroup').value;
+    const today = new Date();
+    
+    // Filtere Geburtstage für gewählten Bereich
+    let todayBirthdays = data.people.filter(person => {
+        const bDate = new Date(person.birthdate);
+        const isToday = bDate.getDate() === today.getDate() && 
+                        bDate.getMonth() === today.getMonth();
+        const inGroup = selectedGroup === 'all' || 
+                       (person.groups && person.groups.includes(selectedGroup));
+        return isToday && inGroup;
+    });
+    
+    // Generiere Benachrichtigung
+    const message = generateGroupReminder(todayBirthdays, selectedGroup);
+    document.getElementById('whatsappMessage').value = message;
+    
+    // Info anzeigen
+    if (todayBirthdays.length > 0) {
+        console.log(`${todayBirthdays.length} Geburtstag(e) heute in ${selectedGroup}`);
+    }
+}
+
+// Neue Funktion für verschiedene Nachrichtentypen
+function selectMessageType() {
+    const types = [
+        'Tägliche Erinnerung',
+        'Wochenvorschau', 
+        'Monatsübersicht',
+        'Individuelle Benachrichtigung'
+    ];
+    
+    // Könnte als Dropdown im WhatsApp-Panel implementiert werden
+}
+
+// Vorkonfigurierte Templates
+const MESSAGE_TEMPLATES = {
+    daily_group: `📅 TÄGLICHE GEBURTSTAGS-INFO
+━━━━━━━━━━━━━━━
+{date}
+Bereich: {group}
+
+{birthdays}
+
+ℹ️ Dies ist eine automatische Erinnerung`,
+
+    weekly_group: `📅 WOCHENÜBERSICHT
+━━━━━━━━━━━━━━━
+{date_range}
+Bereich: {group}
+
+Kommende Geburtstage:
+{upcoming}
+
+📌 Bitte vormerken!`,
+
+    individual_info: `Hallo! 👋
+
+Erinnerung für {date}:
+
+{birthday_info}
+
+Dies ist eine automatische Nachricht vom Birthday Manager.`
+};
+
+// Speichere Templates in LocalStorage
+localStorage.setItem('message_templates', JSON.stringify(MESSAGE_TEMPLATES));
+
+console.log('✅ Benachrichtigungs-System geladen (nur Information, kein Gratulieren)');
+</script><script>
+// === BEREICHS-SPEZIFISCHE CHANNEL-KONFIGURATION ===
+
+// Speichere verschiedene Konfigurationen pro Bereich
+const CHANNEL_CONFIGS = {
+    Familie: {
+        wa_mode: 'group',
+        wa_enabled: true,
+        wa_group_id: 'Familie_WhatsApp',
+        wa_individual: false,
+        em_enabled: true,
+        em_addresses: 'papa@example.com, mama@example.com',
+        auto_morning: true,
+        template: 'family'
+    },
+    CDU: {
+        wa_mode: 'both',
+        wa_enabled: true,
+        wa_group_id: 'CDU_Mitglieder',
+        wa_individual: true,
+        em_enabled: false,
+        telegram_enabled: true,
+        telegram_chat: '@cdu_gruppe',
+        auto_morning: false,
+        template: 'formal'
+    },
+    Verein: {
+        wa_mode: 'group',
+        wa_enabled: true,
+        wa_group_id: 'Vereinsvorstand',
+        em_enabled: true,
+        em_addresses: 'vorstand@verein.de',
+        webhook_enabled: true,
+        webhook_url: 'https://hooks.slack.com/...',
+        auto_weekly: true,
+        template: 'casual'
+    },
+    Arbeit: {
+        wa_mode: 'individual',
+        wa_enabled: false,
+        wa_individual: true,
+        em_enabled: true,
+        em_addresses: 'team@firma.de',
+        teams_enabled: true,
+        auto_morning: true,
+        template: 'business'
+    },
+    Freunde: {
+        wa_mode: 'individual',
+        wa_enabled: true,
+        wa_individual: true,
+        em_enabled: false,
+        auto_morning: false,
+        template: 'casual'
+    },
+    Nachbarn: {
+        wa_mode: 'none',
+        wa_enabled: false,
+        em_enabled: false,
+        sms_enabled: true,
+        auto_morning: false,
+        template: 'formal'
+    }
+};
+
+// Nachrichtenvorlagen pro Typ
+// Duplikat entfernt - MESSAGE_TEMPLATES bereits in Zeile 1950 deklariert
+    family: {
+        group: '👨‍👩‍👧‍👦 FAMILIEN-GEBURTSTAGE\n{date}\n\n{birthdays}\n\nNicht vergessen zu gratulieren! ❤️',
+        individual: 'Hallo {recipient}!\n\nErinnerung: {name} hat heute Geburtstag (wird {age}).\n\nLiebe Grüße'
+    },
+    formal: {
+        group: 'GEBURTSTAGS-BENACHRICHTIGUNG\n\nDatum: {date}\nBereich: {group}\n\n{birthdays}\n\nMit freundlichen Grüßen\nBirthday Manager',
+        individual: 'Sehr geehrte/r {recipient},\n\nhiermit möchte ich Sie informieren, dass {name} heute Geburtstag hat.\n\nMit freundlichen Grüßen'
+    },
+    business: {
+        group: '📊 Team-Geburtstage\n\n{date}\n\n{birthdays}\n\nBitte entsprechend würdigen.',
+        individual: 'Hallo Team,\n\n{name} aus unserer Abteilung hat heute Geburtstag.\n\nViele Grüße'
+    },
+    casual: {
+        group: 'Hey Leute! 🎉\n\n{birthdays}\n\nDenkt dran zu gratulieren! 👍',
+        individual: 'Hi!\n\nKurze Info: {name} hat heute Geburtstag 🎂\n\nCheers!'
+    }
+};
+
+// Lade Konfiguration für spezifischen Bereich
+function loadChannelConfig(groupName) {
+    // Erst aus LocalStorage
+    const saved = localStorage.getItem(`channels_${groupName}`);
+    if (saved) {
+        return JSON.parse(saved);
+    }
+    
+    // Sonst Default für diesen Bereich
+    return CHANNEL_CONFIGS[groupName] || {
+        wa_mode: 'group',
+        wa_enabled: false,
+        em_enabled: false,
+        template: 'formal'
+    };
+}
+
+// Speichere Konfiguration für Bereich
+function saveChannelConfigForGroup(groupName, config) {
+    localStorage.setItem(`channels_${groupName}`, JSON.stringify(config));
+    console.log(`✅ Konfiguration für ${groupName} gespeichert:`, config);
+}
+
+// Zeige alle Konfigurationen
+function showAllConfigurations() {
+    console.log('=== CHANNEL-KONFIGURATIONEN ===');
+    data.groups.forEach(group => {
+        const config = loadChannelConfig(group);
+        console.log(`\n${group}:`);
+        if (config.wa_enabled) console.log(`  📱 WhatsApp: ${config.wa_group_id || 'Einzelchats'}`);
+        if (config.em_enabled) console.log(`  ✉️ E-Mail: ${config.em_addresses}`);
+        if (config.telegram_enabled) console.log(`  ✈️ Telegram: ${config.telegram_chat}`);
+        if (config.webhook_enabled) console.log(`  🔗 Webhook: ${config.webhook_url}`);
+        if (config.auto_morning) console.log(`  🌅 Auto-Morgen: Ja`);
+        if (config.auto_weekly) console.log(`  📅 Auto-Woche: Ja`);
+    });
+}
+
+// Erweiterte configureChannels Funktion
+window.configureChannels = function(groupName) {
+    currentConfigGroup = groupName;
+    document.getElementById('configGroupName').textContent = `Bereich: ${groupName}`;
+    
+    // Lade spezifische Konfiguration für diesen Bereich
+    const config = loadChannelConfig(groupName);
+    
+    // Setze UI-Werte
+    if (config.wa_mode) {
+        const modeRadio = document.querySelector(`input[name="wa_mode"][value="${config.wa_mode}"]`);
+        if (modeRadio) modeRadio.checked = true;
+    }
+    
+    document.getElementById('whatsapp_enabled').checked = config.wa_enabled || false;
+    document.getElementById('whatsapp_group_id').value = config.wa_group_id || '';
+    
+    if (document.getElementById('individual_enabled')) {
+        document.getElementById('individual_enabled').checked = config.wa_individual || false;
+    }
+    
+    document.getElementById('email_enabled').checked = config.em_enabled || false;
+    document.getElementById('email_addresses').value = config.em_addresses || '';
+    
+    // Template basierend auf Bereich
+    if (document.getElementById('individual_template')) {
+        const template = MESSAGE_TEMPLATES[config.template || 'formal'];
+        document.getElementById('individual_template').value = template.individual || '';
+    }
+    
+    // Zeige bereichsspezifische Optionen
+    showGroupSpecificOptions(groupName);
+    
+    document.getElementById('channelConfigModal').style.display = 'block';
+    
+    // UI Update
+    if (window.toggleWhatsAppMode) {
+        toggleWhatsAppMode();
+    }
+}
+
+// Zeige bereichsspezifische Optionen
+function showGroupSpecificOptions(groupName) {
+    const infoBox = document.createElement('div');
+    infoBox.style = 'padding: 10px; background: #e3f2fd; border-radius: 5px; margin: 10px 0;';
+    
+    switch(groupName) {
+        case 'Familie':
+            infoBox.innerHTML = '💡 Tipp: Für Familie empfiehlt sich eine WhatsApp-Gruppe mit täglicher Erinnerung.';
+            break;
+        case 'CDU':
+        case 'Verein':
+            infoBox.innerHTML = '💡 Tipp: Für Organisationen eignen sich Gruppen-Nachrichten oder E-Mail-Verteiler.';
+            break;
+        case 'Arbeit':
+            infoBox.innerHTML = '💡 Tipp: Im beruflichen Umfeld sind E-Mails oder Teams-Nachrichten angemessener.';
+            break;
+        case 'Freunde':
+            infoBox.innerHTML = '💡 Tipp: Bei Freunden sind individuelle WhatsApp-Nachrichten persönlicher.';
+            break;
+        case 'Nachbarn':
+            infoBox.innerHTML = '💡 Tipp: Nachbarn möchten vielleicht keine automatischen Nachrichten.';
+            break;
+        default:
+            infoBox.innerHTML = `💡 Konfiguration für: ${groupName}`;
+    }
+    
+    const existingInfo = document.getElementById('groupSpecificInfo');
+    if (existingInfo) {
+        existingInfo.innerHTML = infoBox.innerHTML;
+    }
+}
+
+// Sende mit bereichsspezifischer Konfiguration
+function sendToGroupChannels(groupName) {
+    const config = loadChannelConfig(groupName);
+    const today = new Date();
+    
+    // Sammle Geburtstage für diesen Bereich
+    const birthdays = data.people.filter(person => {
+        const bDate = new Date(person.birthdate);
+        const isToday = bDate.getDate() === today.getDate() && 
+                        bDate.getMonth() === today.getMonth();
+        const inGroup = person.groups && person.groups.includes(groupName);
+        return isToday && inGroup;
+    });
+    
+    if (birthdays.length === 0) {
+        console.log(`Keine Geburtstage heute in ${groupName}`);
+        return;
+    }
+    
+    console.log(`📤 Sende Benachrichtigungen für ${groupName}:`, birthdays.length, 'Geburtstage');
+    
+    // WhatsApp Gruppe
+    if (config.wa_enabled && config.wa_group_id) {
+        const template = MESSAGE_TEMPLATES[config.template || 'formal'];
+        let message = template.group
+            .replace('{date}', today.toLocaleDateString('de-DE'))
+            .replace('{group}', groupName)
+            .replace('{birthdays}', birthdays.map(p => {
+                const age = today.getFullYear() - new Date(p.birthdate).getFullYear();
+                return `🎂 ${p.name} wird ${age} Jahre`;
+            }).join('\n'));
+        
+        console.log(`📱 WhatsApp an ${config.wa_group_id}:`, message);
+        
+        // Sende über WhatsApp-Server
+        fetch('http://localhost:9999/send-group', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                message: message,
+                bereich: groupName,
+                groupId: config.wa_group_id
+            })
+        });
+    }
+    
+    // WhatsApp Einzelchats
+    if (config.wa_individual) {
+        birthdays.forEach(person => {
+            if (person.phone) {
+                console.log(`📱 Einzelnachricht an ${person.name}: ${person.phone}`);
+            }
+        });
+    }
+    
+    // E-Mail
+    if (config.em_enabled && config.em_addresses) {
+        console.log(`✉️ E-Mail an: ${config.em_addresses}`);
+    }
+    
+    // Telegram
+    if (config.telegram_enabled && config.telegram_chat) {
+        console.log(`✈️ Telegram an: ${config.telegram_chat}`);
+    }
+}
+
+// Teste Konfiguration für einen Bereich
+function testGroupConfig(groupName) {
+    console.log(`\n=== TEST: ${groupName} ===`);
+    const config = loadChannelConfig(groupName);
+    console.log('Konfiguration:', config);
+    
+    // Simuliere Geburtstage
+    sendToGroupChannels(groupName);
+}
+
+console.log('✅ Bereichsspezifische Channel-Konfiguration geladen');
+console.log('Nutze: showAllConfigurations() um alle Einstellungen zu sehen');
+</script>
+<script>
+// === ERWEITERTE BEREICHSVERWALTUNG ===
+
+function renameGroup() {
+    const newName = document.getElementById('groupConfigName').value.trim();
+    const oldName = currentConfigGroup;
+    
+    if (!newName || newName === oldName) return;
+    
+    if (data.groups.includes(newName)) {
+        alert('Ein Bereich mit diesem Namen existiert bereits!');
+        document.getElementById('groupConfigName').value = oldName;
+        return;
+    }
+    
+    if (!confirm('Bereich "' + oldName + '" umbenennen in "' + newName + '"?')) {
+        document.getElementById('groupConfigName').value = oldName;
+        return;
+    }
+    
+    // Update groups array
+    const index = data.groups.indexOf(oldName);
+    if (index > -1) {
+        data.groups[index] = newName;
+    }
+    
+    // Update alle Personen
+    data.people.forEach(person => {
+        if (person.groups && person.groups.includes(oldName)) {
+            const pIndex = person.groups.indexOf(oldName);
+            person.groups[pIndex] = newName;
+        }
+    });
+    
+    // Konfiguration übertragen
+    const config = localStorage.getItem('group_cfg_' + oldName);
+    if (config) {
+        localStorage.setItem('group_cfg_' + newName, config);
+        localStorage.removeItem('group_cfg_' + oldName);
+    }
+    
+    saveData();
+    currentConfigGroup = newName;
+    alert('Bereich erfolgreich umbenannt!');
+    closeGroupConfig();
+    updateGroupsList();
+    updateDisplay();
+}
+
+function deleteGroup(groupName) {
+    if (!groupName) groupName = currentConfigGroup;
+    if (!groupName) return;
+    
+    const count = data.people.filter(p => p.groups && p.groups.includes(groupName)).length;
+    
+    let message = 'Bereich "' + groupName + '" wirklich löschen?';
+    if (count > 0) {
+        message = 'ACHTUNG: ' + count + ' Person(en) sind diesem Bereich zugeordnet!\n\n' +
+                  'Diese Zuordnungen gehen verloren.\n\n' +
+                  'Trotzdem löschen?';
+    }
+    
+    if (!confirm(message)) return;
+    
+    // Entferne aus groups array
+    data.groups = data.groups.filter(g => g !== groupName);
+    
+    // Entferne aus Personen
+    data.people.forEach(person => {
+        if (person.groups) {
+            person.groups = person.groups.filter(g => g !== groupName);
+        }
+    });
+    
+    // Lösche Konfiguration
+    localStorage.removeItem('group_cfg_' + groupName);
+    
+    saveData();
+    closeGroupConfig();
+    updateGroupsList();
+    updateDisplay();
+    
+    alert('Bereich "' + groupName + '" wurde gelöscht.');
+}
+
+// Erweitere openGroupConfig
+const originalOpenGroupConfig = window.openGroupConfig;
+window.openGroupConfig = function(groupName) {
+    currentConfigGroup = groupName;
+    
+    // Setze Namen als editierbares Feld
+    const nameField = document.getElementById('groupConfigName');
+    if (nameField.tagName === 'INPUT') {
+        nameField.value = groupName;
+    } else {
+        nameField.textContent = groupName;
+    }
+    
+    // Lade Config
+    const config = JSON.parse(localStorage.getItem('group_cfg_' + groupName) || '{}');
+    
+    // WhatsApp
+    const waMode = config.wa_mode || 'none';
+    document.querySelector('input[name="wa_mode"][value="' + waMode + '"]').checked = true;
+    document.getElementById('wa_group_name').value = config.wa_group || '';
+    
+    // E-Mail
+    document.getElementById('email_enabled').checked = config.email || false;
+    document.getElementById('email_addresses').value = config.email_addr || '';
+    
+    document.getElementById('groupConfigModal').style.display = 'block';
+};
+
+console.log('✅ Erweiterte Bereichsverwaltung geladen');
+</script><script>
+function testGroupMessage() {
+    if (!currentConfigGroup) return;
+    
+    const waMode = document.querySelector('input[name="wa_mode"]:checked').value;
+    const waGroup = document.getElementById('wa_group_name').value;
+    
+    if (waMode === 'none') {
+        alert('WhatsApp ist für diesen Bereich deaktiviert.');
+        return;
+    }
+    
+    const message = '🔔 TEST-NACHRICHT\n\n' +
+                    'Bereich: ' + currentConfigGroup + '\n' +
+                    'Zeit: ' + new Date().toLocaleString('de-DE') + '\n\n' +
+                    'Konfiguration:\n' +
+                    '- WhatsApp: ' + waMode + '\n' +
+                    '- Gruppe: ' + (waGroup || 'Nicht gesetzt');
+    
+    if (waGroup && waMode !== 'none') {
+        // Kopiere in Zwischenablage
+        navigator.clipboard.writeText(message).then(() => {
+            alert('Test-Nachricht in Zwischenablage kopiert!\n\nÖffnen Sie WhatsApp und fügen Sie sie in die Gruppe "' + waGroup + '" ein.');
+        });
+    } else {
+        alert(message);
+    }
+}
+</script>
+<!-- === BEREICHSVERWALTUNG MIT ICON-BUTTONS === -->
+<script>
+// Override updateGroupsList mit Icon-Buttons Version
+window.updateGroupsList = function() {
+    console.log('Aktualisiere Gruppenliste mit Icons...');
+    
+    var groupsList = document.getElementById('groupsList');
+    if (!groupsList) {
+        var bereicheTab = document.getElementById('bereiche');
+        if (bereicheTab) {
+            groupsList = document.createElement('div');
+            groupsList.id = 'groupsList';
+            groupsList.style.marginTop = '20px';
+            bereicheTab.appendChild(groupsList);
+        }
+    }
+    
+    if (!groupsList) return;
+    
+    var html = '<h3>Vorhandene Bereiche:</h3>';
+    
+    if (data && data.groups && data.groups.length > 0) {
+        for (var i = 0; i < data.groups.length; i++) {
+            var group = data.groups[i];
+            var count = 0;
+            
+            if (data.people) {
+                for (var j = 0; j < data.people.length; j++) {
+                    if (data.people[j].groups && data.people[j].groups.indexOf(group) !== -1) {
+                        count++;
+                    }
+                }
+            }
+            
+            var config = {};
+            try {
+                config = JSON.parse(localStorage.getItem('group_cfg_' + group) || '{}');
+            } catch(e) {}
+            
+            var channelIcons = '';
+            if (config.wa_mode && config.wa_mode !== 'none') channelIcons += '📱 ';
+            if (config.email) channelIcons += '✉️ ';
+            
+            html += '<div style="padding: 15px; background: #f8f9fa; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid #667eea;">';
+            html += '  <div style="display: flex; justify-content: space-between; align-items: center;">';
+            html += '    <div>';
+            html += '      <strong style="font-size: 1.1em;">' + group + '</strong>';
+            html += '      <span style="color: #666; margin-left: 10px;">(' + count + ' Person' + (count !== 1 ? 'en' : '') + ')</span>';
+            
+            if (channelIcons) {
+                html += '<br><span style="font-size: 18px; margin-top: 5px;">' + channelIcons + '</span>';
+            }
+            if (config.wa_group) {
+                html += '<br><small style="color: #666;">WhatsApp: ' + config.wa_group + '</small>';
+            }
+            if (config.email_addr) {
+                html += '<br><small style="color: #666;">E-Mail: ' + config.email_addr + '</small>';
+            }
+            
+            html += '    </div>';
+            html += '    <div style="display: flex; gap: 8px;">';
+            
+            html += '      <button title="Konfigurieren" style="width: 40px; height: 40px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 20px;" ';
+            html += '              onclick="configureGroup(\'' + group + '\')">';
+            html += '        ⚙️';
+            html += '      </button>';
+            
+            var deleteWarning = count > 0 ? 
+                'Achtung: ' + count + ' Person(en) werden die Zuordnung verlieren!\\n\\n' : '';
+            
+            html += '      <button title="Löschen" style="width: 40px; height: 40px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 20px;" ';
+            html += '              onclick="if(confirm(\'' + deleteWarning + 'Bereich ' + group + ' wirklich löschen?\')) deleteGroup(\'' + group + '\')">';
+            html += '        🗑️';
+            html += '      </button>';
+            
+            html += '    </div>';
+            html += '  </div>';
+            html += '</div>';
+        }
+    } else {
+        html += '<p style="color: #999; font-style: italic;">Keine Bereiche vorhanden. Fügen Sie oben einen neuen Bereich hinzu.</p>';
+    }
+    
+    groupsList.innerHTML = html;
+};
+
+// Definiere globale Funktionen
+window.configureGroup = function(groupName) {
+    console.log('Öffne Konfiguration für: ' + groupName);
+    window.currentConfigGroup = groupName;
+    
+    var modal = document.getElementById('groupConfigModal');
+    if (modal) {
+        var nameField = document.getElementById('groupConfigName');
+        if (nameField) {
+            if (nameField.tagName === 'INPUT') {
+                nameField.value = groupName;
+            } else {
+                nameField.textContent = groupName;
+            }
+        }
+        
+        var config = {};
+        try {
+            config = JSON.parse(localStorage.getItem('group_cfg_' + groupName) || '{}');
+        } catch(e) {}
+        
+        var waMode = config.wa_mode || 'none';
+        var waModeRadio = document.querySelector('input[name="wa_mode"][value="' + waMode + '"]');
+        if (waModeRadio) waModeRadio.checked = true;
+        
+        var waGroupField = document.getElementById('wa_group_name');
+        if (waGroupField) waGroupField.value = config.wa_group || '';
+        
+        var emailField = document.getElementById('email_enabled');
+        if (emailField) emailField.checked = config.email || false;
+        
+        var emailAddrField = document.getElementById('email_addresses');
+        if (emailAddrField) emailAddrField.value = config.email_addr || '';
+        
+        modal.style.display = 'block';
+    }
+};
+
+window.deleteGroup = function(groupName) {
+    console.log('Lösche Bereich: ' + groupName);
+    
+    var index = data.groups.indexOf(groupName);
+    if (index > -1) {
+        data.groups.splice(index, 1);
+    }
+    
+    if (data.people) {
+        for (var i = 0; i < data.people.length; i++) {
+            if (data.people[i].groups) {
+                var personGroupIndex = data.people[i].groups.indexOf(groupName);
+                if (personGroupIndex > -1) {
+                    data.people[i].groups.splice(personGroupIndex, 1);
+                }
+            }
+        }
+    }
+    
+    localStorage.setItem('birthdayManagerData', JSON.stringify(data));
+    localStorage.removeItem('group_cfg_' + groupName);
+    
+    location.reload();
+};
+
+// Initialisierung beim Laden
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof updateGroupsList === 'function') {
+        setTimeout(updateGroupsList, 500);
+    }
+});
+
+console.log('✅ Bereichsverwaltung mit Icon-Buttons geladen');
+</script>
+<!-- === ENDE BEREICHSVERWALTUNG === -->
+
+<!-- VERBESSERTE SAVE-FUNKTION MIT MODAL-SCHLIESSUNG -->
+<script>
+(function() {
+    // Überschreibe saveGroupConfig
+    window.saveGroupConfig = function() {
+        if (!window.currentConfigGroup) {
+            alert('Kein Bereich ausgewählt!');
+            return;
+        }
+        
+        var group = window.currentConfigGroup;
+        
+        // Sammle Konfiguration
+        var config = {
+            wa_mode: document.querySelector('input[name="wa_mode"]:checked')?.value || 'none',
+            wa_group: document.getElementById('wa_group_name')?.value || '',
+            email: document.getElementById('email_enabled')?.checked || false,
+            email_addr: document.getElementById('email_addresses')?.value || ''
+        };
+        
+        // Speichere
+        localStorage.setItem('group_cfg_' + group, JSON.stringify(config));
+        
+        // Schließe Modal
+        var modal = document.getElementById('groupConfigModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        
+        // Reset
+        window.currentConfigGroup = null;
+        
+        // Update Liste
+        if (typeof updateGroupsList === 'function') {
+            updateGroupsList();
+        }
+        
+        // Visuelle Bestätigung
+        showSaveNotification(group, config);
+    };
+    
+    // Visuelle Bestätigung
+    window.showSaveNotification = function(group, config) {
+        var notification = document.createElement('div');
+        notification.style.cssText = 'position:fixed;top:20px;right:20px;background:#28a745;color:white;padding:15px 20px;border-radius:5px;box-shadow:0 2px 10px rgba(0,0,0,0.2);z-index:10001;';
+        
+        var icons = '';
+        if (config.wa_mode !== 'none') icons += '📱 ';
+        if (config.email) icons += '✉️';
+        
+        notification.innerHTML = '<strong>✅ Gespeichert!</strong><br>' + group + ' ' + icons;
+        document.body.appendChild(notification);
+        
+        setTimeout(function() {
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.3s';
+            setTimeout(function() {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 2500);
+    };
+    
+    console.log('✅ Verbesserte Save-Funktion mit Modal-Schließung installiert');
+})();
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
