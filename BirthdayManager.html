@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Manager - Vollversion</title>
+    <title>Birthday Manager - Hybrid Version (LocalStorage + DB)</title>
     <style>
+        /* Original Styles beibehalten */
         * {
             margin: 0;
             padding: 0;
@@ -38,6 +39,27 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+        }
+
+        /* Status-Anzeige für Datenquelle */
+        .data-source-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        .data-source-indicator.database {
+            border-left: 4px solid #28a745;
+        }
+
+        .data-source-indicator.localstorage {
+            border-left: 4px solid #ffc107;
         }
 
         .tabs {
@@ -101,7 +123,6 @@
             font-size: 16px;
         }
 
-        /* Checkbox-Liste für Bereiche */
         .checkbox-list {
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -170,6 +191,11 @@
             background: #28a745;
         }
 
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
         .birthday-item {
             background: #f8f9fa;
             padding: 15px;
@@ -181,7 +207,6 @@
             border-left: 4px solid #667eea;
         }
 
-        /* Bereich-Tags */
         .area-tags {
             display: flex;
             flex-wrap: wrap;
@@ -225,7 +250,6 @@
             display: none;
         }
 
-        /* WhatsApp Button - Text statt Emoji */
         .whatsapp-button {
             position: fixed;
             bottom: 20px;
@@ -299,6 +323,22 @@
             border-left: 4px solid #0066cc;
         }
 
+        .warning-box {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .success-box {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #28a745;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -315,8 +355,7 @@
             background: #f8f9fa;
             font-weight: 600;
         }
-        
-        /* Server-Port-Anzeige */
+
         .server-port {
             display: inline-block;
             padding: 2px 8px;
@@ -328,10 +367,15 @@
     </style>
 </head>
 <body>
+    <!-- Datenquelle-Anzeige -->
+    <div class="data-source-indicator" id="dataSourceIndicator">
+        <strong>Datenquelle:</strong> <span id="dataSourceText">Prüfe...</span>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>Birthday Manager</h1>
-            <p>Verwalten Sie Geburtstage für verschiedene Bereiche</p>
+            <p>Hybrid-Version mit LocalStorage und Datenbank-Support</p>
         </div>
 
         <div class="tabs">
@@ -340,7 +384,7 @@
             <button class="tab" onclick="switchTab('import')">Import/Export</button>
             <button class="tab" onclick="switchTab('bereiche')">Bereiche verwalten</button>
             <button class="tab" onclick="switchTab('reminders')">Erinnerungen</button>
-            <button class="tab" onclick="switchTab('whatsapp-config')">WhatsApp Config</button>
+            <button class="tab" onclick="switchTab('settings')">Einstellungen</button>
         </div>
 
         <div class="content">
@@ -450,39 +494,70 @@
                 <button class="btn" onclick="generateWeekReminders()">Wochenübersicht</button>
                 <div id="reminderOutput" style="margin-top: 20px;"></div>
             </div>
-            
-            <!-- WhatsApp Konfiguration -->
-            <div id="whatsapp-config" class="tab-content">
-                <h2>WhatsApp Konfiguration</h2>
-                <div class="info-box">
-                    <strong>Server-Status:</strong> <span id="configServerStatus">Prüfe...</span><br>
-                    <strong>Aktueller Port:</strong> <span class="server-port" id="currentServerPort">9999</span>
-                </div>
-                <div class="form-group">
-                    <label for="serverPort">Server Port:</label>
-                    <input type="number" id="serverPort" value="9999" min="1000" max="65535">
-                    <small style="display: block; margin-top: 5px; color: #666;">
-                        Standard: 9999. Ändern Sie nur bei Konflikten.
-                    </small>
-                </div>
-                <button class="btn" onclick="saveWhatsAppConfig()">Einstellungen speichern</button>
-                <button class="btn btn-secondary" onclick="testWhatsAppConnection()">Verbindung testen</button>
+
+            <!-- Einstellungen -->
+            <div id="settings" class="tab-content">
+                <h2>Einstellungen</h2>
                 
-                <div style="margin-top: 30px;">
-                    <h3>Server starten</h3>
-                    <div class="info-box">
-                        <strong>PowerShell-Befehl:</strong><br>
-                        <code style="display: block; padding: 10px; background: #f0f0f0; margin-top: 10px;">
-                            .\server.ps1 -Port <span id="psCommandPort">9999</span>
-                        </code>
-                        Führen Sie diesen Befehl in PowerShell aus, um den Server zu starten.
+                <div class="info-box">
+                    <strong>Datenquelle Status:</strong>
+                    <div style="margin-top: 10px;">
+                        <span id="dbStatus">Datenbank: Prüfe...</span><br>
+                        <span id="lsStatus">LocalStorage: Aktiv</span>
                     </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3>Daten-Modus</h3>
+                    <div class="form-group">
+                        <label>
+                            <input type="radio" name="dataMode" value="auto" checked onchange="setDataMode('auto')">
+                            Automatisch (Datenbank wenn verfügbar, sonst LocalStorage)
+                        </label><br>
+                        <label style="margin-top: 10px;">
+                            <input type="radio" name="dataMode" value="localstorage" onchange="setDataMode('localstorage')">
+                            Nur LocalStorage verwenden
+                        </label><br>
+                        <label style="margin-top: 10px;">
+                            <input type="radio" name="dataMode" value="database" onchange="setDataMode('database')">
+                            Nur Datenbank verwenden
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3>Daten-Migration</h3>
+                    <button class="btn btn-warning" onclick="migrateToDatabase()">LocalStorage → Datenbank migrieren</button>
+                    <button class="btn btn-secondary" onclick="syncData()">Daten synchronisieren</button>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3>WhatsApp Server</h3>
+                    <div class="form-group">
+                        <label for="whatsappPort">Server Port:</label>
+                        <input type="number" id="whatsappPort" value="9999" min="1000" max="65535">
+                        <small style="display: block; margin-top: 5px; color: #666;">
+                            Standard: 9999
+                        </small>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3>Datenbank Server</h3>
+                    <div class="form-group">
+                        <label for="dbPort">Server Port:</label>
+                        <input type="number" id="dbPort" value="3000" min="1000" max="65535">
+                        <small style="display: block; margin-top: 5px; color: #666;">
+                            Standard: 3000
+                        </small>
+                    </div>
+                    <button class="btn" onclick="testDatabaseConnection()">Verbindung testen</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- WhatsApp Button mit Text statt Emoji -->
+    <!-- WhatsApp Button -->
     <div class="whatsapp-button" onclick="toggleWhatsAppPanel()">WA</div>
 
     <!-- WhatsApp Panel -->
@@ -500,161 +575,180 @@
         <textarea id="whatsappMessage" style="width:100%;min-height:120px;padding:10px;border:1px solid #ddd;border-radius:5px;margin-bottom:10px;" placeholder="Nachricht..."></textarea>
         <button class="btn btn-success" onclick="sendToWhatsApp()">An Gruppe senden</button>
         <button class="btn" onclick="collectBirthdays()">Geburtstage sammeln</button>
-        <button class="btn btn-secondary" onclick="sendDirectMessage()">Direkt senden</button>
         <button class="btn btn-secondary" onclick="toggleWhatsAppPanel()">Schließen</button>
     </div>
 
     <script>
+        // ========================================
+        // KONFIGURATION
+        // ========================================
+        const CONFIG = {
+            WHATSAPP_PORT: localStorage.getItem('whatsappPort') || 9999,
+            DATABASE_PORT: localStorage.getItem('databasePort') || 3000,
+            DATA_MODE: localStorage.getItem('dataMode') || 'auto', // 'auto', 'localstorage', 'database'
+            USE_DATABASE: false // wird dynamisch gesetzt
+        };
+
         // Deutsche Monatsnamen
         const DEUTSCHE_MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
                                   'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-        
-        // WhatsApp Konfiguration
-        let WHATSAPP_CONFIG = {
-            port: 9999
-        };
-        
-        // Funktion für deutsche Datumsanzeige
-        function getDeutschesDatum(dateStr) {
-            const date = new Date(dateStr);
-            const tag = date.getDate();
-            const monat = DEUTSCHE_MONATE[date.getMonth()];
-            return tag + '. ' + monat;
-        }
-        
-        // Datenstruktur
+
+        // ========================================
+        // DATENSTRUKTUR
+        // ========================================
         let data = {
             groups: ['Familie', 'Verein', 'CDU', 'Freunde', 'Arbeit', 'Nachbarn'],
             people: []
         };
 
-        // Beim Laden
-        window.onload = function() {
-            loadData();
-            loadWhatsAppConfig();
+        // ========================================
+        // INITIALISIERUNG
+        // ========================================
+        window.onload = async function() {
+            // Prüfe Datenbank-Verfügbarkeit
+            await checkDatabaseConnection();
+            
+            // Lade Daten basierend auf Modus
+            await loadData();
+            
             initializeGroups();
             updateDisplay();
             checkWhatsAppServer();
+            
+            // Status-Update alle 30 Sekunden
+            setInterval(async () => {
+                await checkDatabaseConnection();
+                checkWhatsAppServer();
+            }, 30000);
         };
 
-        function loadData() {
+        // ========================================
+        // DATENBANK-FUNKTIONEN
+        // ========================================
+        async function checkDatabaseConnection() {
+            try {
+                const response = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/statistics`);
+                if (response.ok) {
+                    document.getElementById('dbStatus').textContent = 'Datenbank: ✓ Online';
+                    document.getElementById('dbStatus').style.color = '#28a745';
+                    
+                    if (CONFIG.DATA_MODE === 'auto' || CONFIG.DATA_MODE === 'database') {
+                        CONFIG.USE_DATABASE = true;
+                        updateDataSourceIndicator('database');
+                    }
+                    return true;
+                }
+            } catch (e) {
+                document.getElementById('dbStatus').textContent = 'Datenbank: ✗ Offline';
+                document.getElementById('dbStatus').style.color = '#dc3545';
+                
+                if (CONFIG.DATA_MODE === 'database') {
+                    alert('Datenbank nicht verfügbar! Wechsle zu LocalStorage.');
+                    CONFIG.DATA_MODE = 'auto';
+                    localStorage.setItem('dataMode', 'auto');
+                }
+                
+                if (CONFIG.DATA_MODE !== 'database') {
+                    CONFIG.USE_DATABASE = false;
+                    updateDataSourceIndicator('localstorage');
+                }
+            }
+            return false;
+        }
+
+        function updateDataSourceIndicator(source) {
+            const indicator = document.getElementById('dataSourceIndicator');
+            const text = document.getElementById('dataSourceText');
+            
+            if (source === 'database') {
+                text.textContent = 'Datenbank';
+                indicator.className = 'data-source-indicator database';
+            } else {
+                text.textContent = 'LocalStorage';
+                indicator.className = 'data-source-indicator localstorage';
+            }
+        }
+
+        // ========================================
+        // DATEN LADEN/SPEICHERN
+        // ========================================
+        async function loadData() {
+            if (CONFIG.USE_DATABASE) {
+                try {
+                    // Lade Bereiche
+                    const groupsResponse = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/groups`);
+                    const groups = await groupsResponse.json();
+                    data.groups = groups.map(g => g.name);
+                    
+                    // Lade Personen
+                    const peopleResponse = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/people`);
+                    const people = await peopleResponse.json();
+                    data.people = people.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        birthdate: p.birthdate,
+                        groups: p.groups || [],
+                        email: p.email,
+                        phone: p.phone,
+                        notes: p.notes
+                    }));
+                    
+                    console.log('Daten aus Datenbank geladen');
+                } catch (e) {
+                    console.error('Fehler beim Laden aus Datenbank:', e);
+                    loadFromLocalStorage();
+                }
+            } else {
+                loadFromLocalStorage();
+            }
+        }
+
+        function loadFromLocalStorage() {
             const savedData = localStorage.getItem('birthdayManagerData');
             if (savedData) {
                 try {
                     data = JSON.parse(savedData);
+                    console.log('Daten aus LocalStorage geladen');
                 } catch (e) {
-                    console.error('Error loading data:', e);
+                    console.error('Fehler beim Laden aus LocalStorage:', e);
                 }
             }
         }
 
-        function saveData() {
-            localStorage.setItem('birthdayManagerData', JSON.stringify(data));
-        }
-        
-        function loadWhatsAppConfig() {
-            const savedConfig = localStorage.getItem('whatsappConfig');
-            if (savedConfig) {
-                try {
-                    WHATSAPP_CONFIG = JSON.parse(savedConfig);
-                    document.getElementById('serverPort').value = WHATSAPP_CONFIG.port;
-                    document.getElementById('currentServerPort').textContent = WHATSAPP_CONFIG.port;
-                    document.getElementById('psCommandPort').textContent = WHATSAPP_CONFIG.port;
-                } catch (e) {
-                    console.error('Error loading WhatsApp config:', e);
-                }
-            }
-        }
-        
-        function saveWhatsAppConfig() {
-            const port = parseInt(document.getElementById('serverPort').value);
-            if (port >= 1000 && port <= 65535) {
-                WHATSAPP_CONFIG.port = port;
-                localStorage.setItem('whatsappConfig', JSON.stringify(WHATSAPP_CONFIG));
-                document.getElementById('currentServerPort').textContent = port;
-                document.getElementById('psCommandPort').textContent = port;
-                alert('WhatsApp-Einstellungen gespeichert! Bitte starten Sie den Server mit dem neuen Port neu.');
-                checkWhatsAppServer();
+        async function saveData() {
+            if (CONFIG.USE_DATABASE) {
+                // Bei Datenbank wird direkt über API gespeichert
+                console.log('Daten werden über API gespeichert');
             } else {
-                alert('Bitte geben Sie einen gültigen Port zwischen 1000 und 65535 ein.');
+                // LocalStorage speichern
+                localStorage.setItem('birthdayManagerData', JSON.stringify(data));
+                console.log('Daten in LocalStorage gespeichert');
             }
         }
 
-        function initializeGroups() {
-            // Filter-Dropdown
-            const groupSelect = document.getElementById('currentGroup');
-            const reminderGroupSelect = document.getElementById('reminderGroup');
-            const whatsappGroupSelect = document.getElementById('whatsappGroup');
-            
-            groupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
-            reminderGroupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
-            whatsappGroupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
-            
-            data.groups.forEach(group => {
-                groupSelect.innerHTML += `<option value="${group}">${group}</option>`;
-                reminderGroupSelect.innerHTML += `<option value="${group}">${group}</option>`;
-                whatsappGroupSelect.innerHTML += `<option value="${group}">${group}</option>`;
-            });
-            
-            // Checkbox-Liste für Person hinzufügen
-            updateGroupCheckboxes();
-            updateGroupsList();
-        }
-
-        function updateGroupCheckboxes() {
-            const checkboxList = document.getElementById('personGroups');
-            checkboxList.innerHTML = '';
-            
-            data.groups.forEach(group => {
-                const item = document.createElement('div');
-                item.className = 'checkbox-item';
-                item.innerHTML = `
-                    <input type="checkbox" id="group_${group}" value="${group}">
-                    <label for="group_${group}">${group}</label>
-                `;
-                checkboxList.appendChild(item);
-                
-                // Klick auf das ganze Item
-                item.addEventListener('click', function(e) {
-                    if (e.target.tagName !== 'INPUT') {
-                        const checkbox = item.querySelector('input');
-                        checkbox.checked = !checkbox.checked;
-                    }
-                });
-            });
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabName).classList.add('active');
-        }
-
-        function addPerson(e) {
+        // ========================================
+        // PERSONEN-VERWALTUNG
+        // ========================================
+        async function addPerson(e) {
             e.preventDefault();
             
-            // Sammle ausgewählte Bereiche
             const selectedGroups = [];
             document.querySelectorAll('#personGroups input[type="checkbox"]:checked').forEach(checkbox => {
                 selectedGroups.push(checkbox.value);
             });
             
-            // Falls keine Bereiche ausgewählt, nehme "Allgemein"
             if (selectedGroups.length === 0) {
                 if (!data.groups.includes('Allgemein')) {
                     data.groups.push('Allgemein');
-                    initializeGroups();
+                    await initializeGroups();
                 }
                 selectedGroups.push('Allgemein');
             }
             
             const person = {
-                id: Date.now(),
                 name: document.getElementById('personName').value.trim(),
                 birthdate: document.getElementById('personBirthdate').value,
-                groups: selectedGroups, // Array von Bereichen
+                groups: selectedGroups,
                 email: document.getElementById('personEmail').value.trim(),
                 phone: document.getElementById('personPhone').value.trim(),
                 notes: document.getElementById('personNotes').value.trim()
@@ -665,18 +759,104 @@
                 return;
             }
             
-            data.people.push(person);
-            saveData();
+            if (CONFIG.USE_DATABASE) {
+                try {
+                    // Finde Group IDs
+                    const groupsResponse = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/groups`);
+                    const groups = await groupsResponse.json();
+                    const groupIds = selectedGroups.map(name => {
+                        const group = groups.find(g => g.name === name);
+                        return group ? group.id : null;
+                    }).filter(id => id !== null);
+                    
+                    const response = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/people`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            ...person,
+                            group_ids: groupIds
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const newPerson = await response.json();
+                        person.id = newPerson.id;
+                        data.people.push(person);
+                        alert(`${person.name} wurde erfolgreich hinzugefügt!`);
+                    } else {
+                        throw new Error('Fehler beim Speichern');
+                    }
+                } catch (e) {
+                    console.error('Fehler beim Hinzufügen:', e);
+                    alert('Fehler beim Speichern in Datenbank. Verwende LocalStorage.');
+                    CONFIG.USE_DATABASE = false;
+                    person.id = Date.now();
+                    data.people.push(person);
+                    await saveData();
+                }
+            } else {
+                person.id = Date.now();
+                data.people.push(person);
+                await saveData();
+                alert(`${person.name} wurde erfolgreich hinzugefügt!`);
+            }
+            
             updateDisplay();
             e.target.reset();
-            alert(`${person.name} wurde erfolgreich hinzugefügt!`);
         }
 
+        async function deletePerson(id) {
+            if (!confirm('Person wirklich löschen?')) return;
+            
+            if (CONFIG.USE_DATABASE) {
+                try {
+                    const response = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/people/${id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        data.people = data.people.filter(p => p.id !== id);
+                        updateDisplay();
+                    } else {
+                        throw new Error('Fehler beim Löschen');
+                    }
+                } catch (e) {
+                    console.error('Fehler beim Löschen:', e);
+                    alert('Fehler beim Löschen aus Datenbank');
+                }
+            } else {
+                data.people = data.people.filter(p => p.id !== id && p.id !== parseInt(id));
+                await saveData();
+                updateDisplay();
+            }
+        }
+
+        function editPerson(id) {
+            const person = data.people.find(p => p.id === id || p.id === parseInt(id));
+            if (!person) return;
+            
+            document.getElementById('personName').value = person.name;
+            document.getElementById('personBirthdate').value = person.birthdate;
+            document.getElementById('personEmail').value = person.email || '';
+            document.getElementById('personPhone').value = person.phone || '';
+            document.getElementById('personNotes').value = person.notes || '';
+            
+            document.querySelectorAll('#personGroups input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = person.groups && person.groups.includes(checkbox.value);
+            });
+            
+            data.people = data.people.filter(p => p.id !== id && p.id !== parseInt(id));
+            
+            document.querySelectorAll('.tab')[1].click();
+        }
+
+        // ========================================
+        // ANZEIGE-FUNKTIONEN
+        // ========================================
         function updateDisplay() {
             const currentGroup = document.getElementById('currentGroup').value;
             let filteredPeople = data.people;
             
-            // Filtern nach Bereich (Person wird angezeigt wenn sie dem Bereich angehört)
             if (currentGroup !== 'all') {
                 filteredPeople = data.people.filter(p => 
                     p.groups && p.groups.includes(currentGroup)
@@ -699,7 +879,6 @@
                 return bDate.getMonth() === currentMonth;
             }).length;
             
-            // Berechne Personen mit mehreren Bereichen
             const multiArea = data.people.filter(p => p.groups && p.groups.length > 1).length;
             
             stats.innerHTML = `
@@ -714,6 +893,10 @@
                 <div class="stat-card">
                     <div style="font-size: 2em; font-weight: bold;">${multiArea}</div>
                     <div>Personen in mehreren Bereichen</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 2em; font-weight: bold;">${data.groups.length}</div>
+                    <div>Bereiche gesamt</div>
                 </div>
             `;
         }
@@ -773,7 +956,6 @@
                 return;
             }
             
-            // Sortiere nach Monat und Tag
             const sortedPeople = [...people].sort((a, b) => {
                 const dateA = new Date(a.birthdate);
                 const dateB = new Date(b.birthdate);
@@ -812,42 +994,69 @@
             list.innerHTML = html;
         }
 
-        function editPerson(id) {
-            // Fix für String und Number IDs
-            id = parseInt(id) || id;
-            const person = data.people.find(p => p.id === id);
-            if (!person) return;
+        // ========================================
+        // HILFSFUNKTIONEN
+        // ========================================
+        function getDeutschesDatum(dateStr) {
+            const date = new Date(dateStr);
+            const tag = date.getDate();
+            const monat = DEUTSCHE_MONATE[date.getMonth()];
+            return tag + '. ' + monat;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            // Fülle Formular aus
-            document.getElementById('personName').value = person.name;
-            document.getElementById('personBirthdate').value = person.birthdate;
-            document.getElementById('personEmail').value = person.email || '';
-            document.getElementById('personPhone').value = person.phone || '';
-            document.getElementById('personNotes').value = person.notes || '';
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // ========================================
+        // BEREICHE-VERWALTUNG
+        // ========================================
+        async function initializeGroups() {
+            const groupSelect = document.getElementById('currentGroup');
+            const reminderGroupSelect = document.getElementById('reminderGroup');
+            const whatsappGroupSelect = document.getElementById('whatsappGroup');
             
-            // Setze Checkboxen
-            document.querySelectorAll('#personGroups input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = person.groups && person.groups.includes(checkbox.value);
+            groupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
+            reminderGroupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
+            whatsappGroupSelect.innerHTML = '<option value="all">Alle Bereiche</option>';
+            
+            data.groups.forEach(group => {
+                groupSelect.innerHTML += `<option value="${group}">${group}</option>`;
+                reminderGroupSelect.innerHTML += `<option value="${group}">${group}</option>`;
+                whatsappGroupSelect.innerHTML += `<option value="${group}">${group}</option>`;
             });
             
-            // Lösche alte Person
-            data.people = data.people.filter(p => p.id !== id);
+            updateGroupCheckboxes();
+            updateGroupsList();
+        }
+
+        function updateGroupCheckboxes() {
+            const checkboxList = document.getElementById('personGroups');
+            checkboxList.innerHTML = '';
             
-            // Wechsle zum Hinzufügen-Tab
-            document.querySelectorAll('.tab')[1].click();
+            data.groups.forEach(group => {
+                const item = document.createElement('div');
+                item.className = 'checkbox-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="group_${group}" value="${group}">
+                    <label for="group_${group}">${group}</label>
+                `;
+                checkboxList.appendChild(item);
+                
+                item.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'INPUT') {
+                        const checkbox = item.querySelector('input');
+                        checkbox.checked = !checkbox.checked;
+                    }
+                });
+            });
         }
 
-        function deletePerson(id) {
-            // Fix für String und Number IDs
-            id = parseInt(id) || id;
-            if (confirm('Person wirklich löschen?')) {
-                data.people = data.people.filter(p => p.id !== id);
-                saveData();
-                updateDisplay();
-            }
-        }
-
-        function addGroup() {
+        async function addGroup() {
             const groupName = document.getElementById('newGroupName').value.trim();
             if (!groupName) {
                 alert('Bitte Bereichsnamen eingeben.');
@@ -859,11 +1068,33 @@
                 return;
             }
             
-            data.groups.push(groupName);
-            saveData();
-            initializeGroups();
-            document.getElementById('newGroupName').value = '';
-            alert('Bereich hinzugefügt!');
+            if (CONFIG.USE_DATABASE) {
+                try {
+                    const response = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/groups`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: groupName })
+                    });
+                    
+                    if (response.ok) {
+                        data.groups.push(groupName);
+                        await initializeGroups();
+                        document.getElementById('newGroupName').value = '';
+                        alert('Bereich hinzugefügt!');
+                    } else {
+                        throw new Error('Fehler beim Hinzufügen');
+                    }
+                } catch (e) {
+                    console.error('Fehler beim Hinzufügen des Bereichs:', e);
+                    alert('Fehler beim Speichern in Datenbank');
+                }
+            } else {
+                data.groups.push(groupName);
+                await saveData();
+                await initializeGroups();
+                document.getElementById('newGroupName').value = '';
+                alert('Bereich hinzugefügt!');
+            }
         }
 
         function updateGroupsList() {
@@ -871,7 +1102,6 @@
             let html = '<h3>Vorhandene Bereiche:</h3>';
             
             data.groups.forEach(group => {
-                // Zähle Personen die diesem Bereich angehören
                 const count = data.people.filter(p => p.groups && p.groups.includes(group)).length;
                 
                 html += `
@@ -885,7 +1115,7 @@
             list.innerHTML = html;
         }
 
-        function deleteGroup(groupName) {
+        async function deleteGroup(groupName) {
             const peopleInGroup = data.people.filter(p => p.groups && p.groups.includes(groupName)).length;
             
             if (peopleInGroup > 0) {
@@ -893,12 +1123,35 @@
                 return;
             }
             
-            data.groups = data.groups.filter(g => g !== groupName);
-            saveData();
-            initializeGroups();
+            if (CONFIG.USE_DATABASE) {
+                try {
+                    const groupsResponse = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/groups`);
+                    const groups = await groupsResponse.json();
+                    const group = groups.find(g => g.name === groupName);
+                    
+                    if (group) {
+                        const response = await fetch(`http://localhost:${CONFIG.DATABASE_PORT}/api/groups/${group.id}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        if (response.ok) {
+                            data.groups = data.groups.filter(g => g !== groupName);
+                            await initializeGroups();
+                        }
+                    }
+                } catch (e) {
+                    console.error('Fehler beim Löschen des Bereichs:', e);
+                }
+            } else {
+                data.groups = data.groups.filter(g => g !== groupName);
+                await saveData();
+                await initializeGroups();
+            }
         }
 
-        // IMPORT/EXPORT mit Multi-Bereich Support und Umlaut-Fix
+        // ========================================
+        // IMPORT/EXPORT
+        // ========================================
         function handleFileImport(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -907,7 +1160,7 @@
             const status = document.getElementById('importStatus');
             const preview = document.getElementById('importPreview');
             
-            reader.onload = function(event) {
+            reader.onload = async function(event) {
                 try {
                     const text = event.target.result;
                     const lines = text.split(/\r?\n/).filter(line => line.trim());
@@ -919,10 +1172,8 @@
                         const line = lines[i].trim();
                         if (!line) continue;
                         
-                        // Überspringe Header
                         if (i === 0 && line.toLowerCase().includes('name')) continue;
                         
-                        // CSV parsen (beachte Anführungszeichen)
                         const cols = parseCSVLine(line);
                         
                         const name = cols[0] ? cols[0].trim() : '';
@@ -934,12 +1185,10 @@
                             continue;
                         }
                         
-                        // Bereiche mit Semikolon getrennt
                         let groups = [];
                         if (cols[2]) {
                             groups = cols[2].split(';').map(g => g.trim()).filter(g => g);
                             
-                            // Füge neue Bereiche hinzu
                             groups.forEach(g => {
                                 if (!data.groups.includes(g)) {
                                     data.groups.push(g);
@@ -971,8 +1220,8 @@
                     
                     previewHTML += '</table>';
                     
-                    saveData();
-                    initializeGroups();
+                    await saveData();
+                    await initializeGroups();
                     updateDisplay();
                     
                     status.innerHTML = `<div style="padding:10px;background:#d4edda;color:#155724;border-radius:5px;">
@@ -990,12 +1239,10 @@
                 }
             };
             
-            // Wichtig: UTF-8 mit BOM Support
             reader.readAsText(file, 'UTF-8');
             e.target.value = '';
         }
-        
-        // CSV-Zeile parsen (beachte Anführungszeichen)
+
         function parseCSVLine(line) {
             const result = [];
             let current = '';
@@ -1021,7 +1268,6 @@
         function formatDateForInput(dateStr) {
             dateStr = dateStr.trim();
             
-            // Verschiedene Datumsformate unterstützen
             const formats = [
                 /(\d{1,2})\.(\d{1,2})\.(\d{4})/,  // DD.MM.YYYY
                 /(\d{1,2})\/(\d{1,2})\/(\d{4})/,  // DD/MM/YYYY
@@ -1033,10 +1279,8 @@
                 const match = dateStr.match(format);
                 if (match) {
                     if (format === formats[3]) {
-                        // YYYY-MM-DD Format
                         return `${match[1]}-${match[2].padStart(2,'0')}-${match[3].padStart(2,'0')}`;
                     } else {
-                        // DD.MM.YYYY oder ähnlich
                         return `${match[3]}-${match[2].padStart(2,'0')}-${match[1].padStart(2,'0')}`;
                     }
                 }
@@ -1045,8 +1289,16 @@
             return dateStr;
         }
 
-        function exportData() {
-            // BOM für UTF-8 (wichtig für Excel)
+        async function exportData() {
+            if (CONFIG.USE_DATABASE) {
+                try {
+                    window.location.href = `http://localhost:${CONFIG.DATABASE_PORT}/api/export/csv`;
+                    return;
+                } catch (e) {
+                    console.error('Fehler beim Export aus Datenbank:', e);
+                }
+            }
+            
             const BOM = '\uFEFF';
             const csv = ['Name,Geburtsdatum,Bereiche,Email,Telefon,Notizen'];
             
@@ -1058,7 +1310,6 @@
                 csv.push(`"${person.name}","${dateStr}","${groupsStr}","${person.email || ''}","${person.phone || ''}","${person.notes || ''}"`);
             });
             
-            // Mit BOM für korrekte Umlaut-Darstellung in Excel
             const blob = new Blob([BOM + csv.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -1080,6 +1331,9 @@
             link.click();
         }
 
+        // ========================================
+        // ERINNERUNGEN
+        // ========================================
         function generateReminders() {
             const output = document.getElementById('reminderOutput');
             const today = new Date();
@@ -1090,7 +1344,6 @@
                 return bDate.getDate() === today.getDate() && bDate.getMonth() === today.getMonth();
             });
             
-            // Filter nach Bereich wenn ausgewählt
             if (selectedGroup !== 'all') {
                 todayBirthdays = todayBirthdays.filter(p => p.groups && p.groups.includes(selectedGroup));
             }
@@ -1129,7 +1382,6 @@
                 return thisYear >= today && thisYear <= nextWeek;
             });
             
-            // Filter nach Bereich
             if (selectedGroup !== 'all') {
                 weekBirthdays = weekBirthdays.filter(p => p.groups && p.groups.includes(selectedGroup));
             }
@@ -1156,11 +1408,13 @@
             output.innerHTML = html;
         }
 
-        // WhatsApp Funktionen - KORRIGIERT
+        // ========================================
+        // WHATSAPP FUNKTIONEN
+        // ========================================
         function getWhatsAppServerURL() {
-            return `http://localhost:${WHATSAPP_CONFIG.port}`;
+            return `http://localhost:${CONFIG.WHATSAPP_PORT}`;
         }
-        
+
         function toggleWhatsAppPanel() {
             const panel = document.getElementById('whatsappPanel');
             panel.classList.toggle('show');
@@ -1171,79 +1425,57 @@
         }
 
         async function checkWhatsAppServer() {
-            const statusElements = [
-                document.getElementById('whatsappStatus'),
-                document.getElementById('configServerStatus')
-            ];
-            
             try {
                 const response = await fetch(getWhatsAppServerURL() + '/status');
                 const data = await response.json();
                 
-                statusElements.forEach(el => {
-                    if (el) {
-                        el.textContent = `Server Online - Port ${WHATSAPP_CONFIG.port}`;
-                        el.style.background = '#d4edda';
-                        el.style.color = '#155724';
-                    }
-                });
+                const status = document.getElementById('whatsappStatus');
+                status.textContent = `Server Online - Port ${CONFIG.WHATSAPP_PORT}`;
+                status.style.background = '#d4edda';
+                status.style.color = '#155724';
             } catch (e) {
-                statusElements.forEach(el => {
-                    if (el) {
-                        el.textContent = `Server Offline - Bitte starten auf Port ${WHATSAPP_CONFIG.port}`;
-                        el.style.background = '#f8d7da';
-                        el.style.color = '#721c24';
-                    }
-                });
-            }
-        }
-        
-        async function testWhatsAppConnection() {
-            try {
-                const response = await fetch(getWhatsAppServerURL() + '/status');
-                const data = await response.json();
-                alert(`Server-Verbindung erfolgreich!\n\nPort: ${data.port}\nStatus: ${data.status}\nZeit: ${data.timestamp}`);
-            } catch (e) {
-                alert(`Verbindung fehlgeschlagen!\n\nBitte starten Sie den Server mit:\n.\server.ps1 -Port ${WHATSAPP_CONFIG.port}`);
+                const status = document.getElementById('whatsappStatus');
+                status.textContent = `Server Offline - Bitte starten auf Port ${CONFIG.WHATSAPP_PORT}`;
+                status.style.background = '#f8d7da';
+                status.style.color = '#721c24';
             }
         }
 
         function collectBirthdays() {
             const today = new Date();
             const selectedGroup = document.getElementById('whatsappGroup').value;
-            let message = `🎂 GEBURTSTAGS-ERINNERUNG\n📅 ${today.toLocaleDateString('de-DE')}\n`;
+            let message = `GEBURTSTAGS-ERINNERUNG\n${today.toLocaleDateString('de-DE')}\n`;
             
             if (selectedGroup !== 'all') {
-                message += `📌 Bereich: ${selectedGroup}\n`;
+                message += `Bereich: ${selectedGroup}\n`;
             }
-            message += '━━━━━━━━━━━━━━━━\n\n';
+            message += '\n';
             
             let todayBirthdays = data.people.filter(person => {
                 const bDate = new Date(person.birthdate);
                 return bDate.getDate() === today.getDate() && bDate.getMonth() === today.getMonth();
             });
             
-            // Filter nach Bereich
             if (selectedGroup !== 'all') {
                 todayBirthdays = todayBirthdays.filter(p => p.groups && p.groups.includes(selectedGroup));
             }
             
             if (todayBirthdays.length > 0) {
-                message += '🎉 HEUTE Geburtstag:\n\n';
+                message += 'HEUTE Geburtstag:\n';
                 todayBirthdays.forEach(person => {
                     const age = today.getFullYear() - new Date(person.birthdate).getFullYear();
                     const groupsText = person.groups ? ` (${person.groups.join(', ')})` : '';
-                    message += `🎈 ${person.name} wird ${age} Jahre${groupsText}\n`;
+                    message += `- ${person.name} wird ${age} Jahre${groupsText}\n`;
                 });
             } else {
-                message += '📝 Keine Geburtstage heute';
+                message += 'Keine Geburtstage heute';
                 if (selectedGroup !== 'all') {
                     message += ` im Bereich ${selectedGroup}`;
                 }
                 message += '.\n';
             }
             
-            message += '\n━━━━━━━━━━━━━━━━\n✨ Bitte alle gratulieren!';
+            message += '\nBitte alle gratulieren!';
             
             document.getElementById('whatsappMessage').value = message;
         }
@@ -1264,57 +1496,90 @@
                     body: JSON.stringify({ 
                         message: message,
                         bereich: selectedGroup,
-                        groupId: selectedGroup // Optional
+                        groupId: selectedGroup
                     })
                 });
                 
                 if (response.ok) {
-                    const data = await response.json();
                     alert('WhatsApp öffnet sich!\n\n1. Gruppe wählen\n2. STRG+V zum Einfügen\n3. Enter zum Senden');
                     toggleWhatsAppPanel();
                 } else {
                     alert('Fehler beim Senden. Bitte Server-Status prüfen.');
                 }
             } catch (e) {
-                alert(`Server nicht erreichbar!\n\nBitte starten Sie den Server:\n.\server.ps1 -Port ${WHATSAPP_CONFIG.port}`);
+                alert(`Server nicht erreichbar!\n\nBitte starten Sie den Server:\n.\\server.ps1 -Port ${CONFIG.WHATSAPP_PORT}`);
             }
         }
-        
-        async function sendDirectMessage() {
-            const message = document.getElementById('whatsappMessage').value;
+
+        // ========================================
+        // EINSTELLUNGEN
+        // ========================================
+        function setDataMode(mode) {
+            CONFIG.DATA_MODE = mode;
+            localStorage.setItem('dataMode', mode);
             
-            if (!message.trim()) {
-                alert('Bitte geben Sie eine Nachricht ein!');
+            if (mode === 'database') {
+                checkDatabaseConnection().then(connected => {
+                    if (!connected) {
+                        alert('Datenbank nicht verfügbar! Wechsle zu Auto-Modus.');
+                        CONFIG.DATA_MODE = 'auto';
+                        localStorage.setItem('dataMode', 'auto');
+                        document.querySelector('input[name="dataMode"][value="auto"]').checked = true;
+                    } else {
+                        CONFIG.USE_DATABASE = true;
+                        loadData().then(() => updateDisplay());
+                    }
+                });
+            } else if (mode === 'localstorage') {
+                CONFIG.USE_DATABASE = false;
+                loadData().then(() => updateDisplay());
+            } else {
+                checkDatabaseConnection().then(() => {
+                    loadData().then(() => updateDisplay());
+                });
+            }
+        }
+
+        async function testDatabaseConnection() {
+            const dbPort = document.getElementById('dbPort').value;
+            try {
+                const response = await fetch(`http://localhost:${dbPort}/api/statistics`);
+                if (response.ok) {
+                    alert(`Datenbank-Verbindung erfolgreich!\nPort: ${dbPort}`);
+                    CONFIG.DATABASE_PORT = dbPort;
+                    localStorage.setItem('databasePort', dbPort);
+                } else {
+                    alert('Datenbank antwortet, aber mit Fehler.');
+                }
+            } catch (e) {
+                alert(`Keine Verbindung zur Datenbank auf Port ${dbPort}!\n\nBitte starten Sie den Server:\nnode server_with_db.js`);
+            }
+        }
+
+        async function migrateToDatabase() {
+            if (!CONFIG.USE_DATABASE) {
+                const connected = await checkDatabaseConnection();
+                if (!connected) {
+                    alert('Datenbank nicht verfügbar! Bitte erst Datenbank-Server starten.');
+                    return;
+                }
+            }
+            
+            if (!confirm('Alle LocalStorage-Daten werden in die Datenbank kopiert. Fortfahren?')) {
                 return;
             }
             
-            const phoneNumber = prompt('Bitte Telefonnummer eingeben (mit Ländercode, z.B. 491234567890):');
-            if (!phoneNumber) return;
-            
-            const name = prompt('Name des Empfängers (optional):') || 'Direkt';
-            
             try {
-                const response = await fetch(getWhatsAppServerURL() + '/send-whatsapp', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        phone: phoneNumber.replace(/\D/g, ''), // Entferne alle Nicht-Ziffern
-                        message: message,
-                        name: name
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    alert(`WhatsApp öffnet sich für ${name}!`);
-                    toggleWhatsAppPanel();
-                } else {
-                    const error = await response.json();
-                    alert(`Fehler: ${error.error}`);
-                }
+                // TODO: Implementiere Migration
+                alert('Migration-Funktion wird noch implementiert.\n\nNutzen Sie vorerst:\nnode migrate_to_db.js');
             } catch (e) {
-                alert(`Server nicht erreichbar!\n\nBitte starten Sie den Server:\n.\server.ps1 -Port ${WHATSAPP_CONFIG.port}`);
+                console.error('Fehler bei Migration:', e);
+                alert('Fehler bei der Migration!');
             }
+        }
+
+        async function syncData() {
+            alert('Sync-Funktion wird noch implementiert.');
         }
 
         // Auto-Check alle 10 Sekunden
