@@ -1,0 +1,943 @@
+{
+  "exportDate": "2025-09-25T08:44:49.002Z",
+  "version": "repaired",
+  "count": 78,
+  "contacts": [
+    {
+      "vorname": "Benno",
+      "nachname": "Fischer",
+      "geburtstag": "12.02.1950",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 79
+    },
+    {
+      "vorname": "Stephan",
+      "nachname": "Linder",
+      "geburtstag": "16.02.1985",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 80
+    },
+    {
+      "vorname": "Helmut",
+      "nachname": "Bellemann",
+      "geburtstag": "26.02.1939",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 81
+    },
+    {
+      "vorname": "Gerhard",
+      "nachname": "Back",
+      "geburtstag": "26.02.1950",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 82
+    },
+    {
+      "vorname": "Udo",
+      "nachname": "Back",
+      "geburtstag": "05.03.1975",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 83
+    },
+    {
+      "vorname": "Karlheinz",
+      "nachname": "Jung",
+      "geburtstag": "16.03.1970",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 84
+    },
+    {
+      "vorname": "Josef",
+      "nachname": "Becker",
+      "geburtstag": "17.03.1958",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 85
+    },
+    {
+      "vorname": "Wolfgang",
+      "nachname": "Bitsch",
+      "geburtstag": "18.03.1965",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 86
+    },
+    {
+      "vorname": "Albrecht",
+      "nachname": "Rothermel",
+      "geburtstag": "19.03.1942",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 87
+    },
+    {
+      "vorname": "Dieter",
+      "nachname": "Heinrich",
+      "geburtstag": "21.03.1937",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 88
+    },
+    {
+      "vorname": "Dieter",
+      "nachname": "Zimmermann",
+      "geburtstag": "25.03.1943",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 89
+    },
+    {
+      "vorname": "Carsten",
+      "nachname": "Kamuf",
+      "geburtstag": "26.03.1978",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 90
+    },
+    {
+      "vorname": "Hugo",
+      "nachname": "Stegmüller",
+      "geburtstag": "31.03.1927",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 91
+    },
+    {
+      "vorname": "Horst",
+      "nachname": "Knopf",
+      "geburtstag": "03.04.1957",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 92
+    },
+    {
+      "vorname": "Josef",
+      "nachname": "Wittmann",
+      "geburtstag": "11.04.1956",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 93
+    },
+    {
+      "vorname": "Holger",
+      "nachname": "Hinz",
+      "geburtstag": "24.04.1940",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 94
+    },
+    {
+      "vorname": "Birgit",
+      "nachname": "Klemenz",
+      "geburtstag": "24.04.1950",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 95
+    },
+    {
+      "vorname": "Leo",
+      "nachname": "Goetzmann",
+      "geburtstag": "26.04.1936",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 96
+    },
+    {
+      "vorname": "Luca",
+      "nachname": "Ian Klevenz",
+      "geburtstag": "01.05.1998",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 97
+    },
+    {
+      "vorname": "Andreas",
+      "nachname": "Schlett",
+      "geburtstag": "04.05.1951",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 98
+    },
+    {
+      "vorname": "Dieter",
+      "nachname": "Heinzmann",
+      "geburtstag": "08.05.1960",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 99
+    },
+    {
+      "vorname": "Bernhard",
+      "nachname": "Köhler",
+      "geburtstag": "11.05.1961",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 100
+    },
+    {
+      "vorname": "Søren",
+      "nachname": "Heck",
+      "geburtstag": "13.05.2000",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 101
+    },
+    {
+      "vorname": "Tobias",
+      "nachname": "Berger",
+      "geburtstag": "14.05.1987",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 102
+    },
+    {
+      "vorname": "Erich",
+      "nachname": "Purkott",
+      "geburtstag": "15.05.1949",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 103
+    },
+    {
+      "vorname": "Alexander",
+      "nachname": "Kremer",
+      "geburtstag": "17.05.1991",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 104
+    },
+    {
+      "vorname": "Gerhard",
+      "nachname": "Linder",
+      "geburtstag": "11.06.1950",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 105
+    },
+    {
+      "vorname": "Horst",
+      "nachname": "Simon",
+      "geburtstag": "21.06.1938",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 106
+    },
+    {
+      "vorname": "Werner",
+      "nachname": "Kleiber",
+      "geburtstag": "22.06.1964",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 107
+    },
+    {
+      "vorname": "Diana",
+      "nachname": "Maria Rechmann",
+      "geburtstag": "23.06.1980",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 108
+    },
+    {
+      "vorname": "Walter",
+      "nachname": "Götzmann",
+      "geburtstag": "25.06.1946",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 109
+    },
+    {
+      "vorname": "Stefan",
+      "nachname": "Geider",
+      "geburtstag": "28.06.1972",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 110
+    },
+    {
+      "vorname": "Karl-Albrecht",
+      "nachname": "Knopf",
+      "geburtstag": "22.07.1968",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 111
+    },
+    {
+      "vorname": "Klaus",
+      "nachname": "Kamuf",
+      "geburtstag": "26.07.1968",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 112
+    },
+    {
+      "vorname": "Konrad",
+      "nachname": "Kolibius",
+      "geburtstag": "03.08.1950",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 113
+    },
+    {
+      "vorname": "Hildegard",
+      "nachname": "Marus",
+      "geburtstag": "17.08.1947",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 114
+    },
+    {
+      "vorname": "Werner",
+      "nachname": "Vetter",
+      "geburtstag": "24.08.1950",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 115
+    },
+    {
+      "vorname": "Helmut",
+      "nachname": "Goetzmann",
+      "geburtstag": "02.09.1948",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 116
+    },
+    {
+      "vorname": "Michael",
+      "nachname": "Eck",
+      "geburtstag": "08.09.1968",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 117
+    },
+    {
+      "vorname": "Alfred",
+      "nachname": "Götzmann",
+      "geburtstag": "20.09.1952",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 118
+    },
+    {
+      "vorname": "Edgar",
+      "nachname": "Thome",
+      "geburtstag": "21.11.1946",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 119
+    },
+    {
+      "vorname": "Anton",
+      "nachname": "Kremer",
+      "geburtstag": "21.11.1946",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 120
+    },
+    {
+      "vorname": "Kuno",
+      "nachname": "Schnader",
+      "geburtstag": "03.12.1928",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 121
+    },
+    {
+      "vorname": "Roman",
+      "nachname": "Heger",
+      "geburtstag": "05.12.1959",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 122
+    },
+    {
+      "vorname": "Alfred",
+      "nachname": "Köhler",
+      "geburtstag": "11.12.1952",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 123
+    },
+    {
+      "vorname": "Gerhard",
+      "nachname": "Kynast",
+      "geburtstag": "12.12.1947",
+      "gruppen": [
+        "Allgemein"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 124
+    },
+    {
+      "vorname": "Sirikit",
+      "nachname": "Klevenz",
+      "geburtstag": "01.01.1968",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 125
+    },
+    {
+      "vorname": "Sissy",
+      "nachname": "Hägele",
+      "geburtstag": "05.10.1976",
+      "gruppen": [
+        "Familie"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 126
+    },
+    {
+      "vorname": "Erich",
+      "nachname": "Heger",
+      "geburtstag": "22.09.1949",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 127
+    },
+    {
+      "vorname": "Achim",
+      "nachname": "Schell",
+      "geburtstag": "02.10.1970",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 128
+    },
+    {
+      "vorname": "Sina",
+      "nachname": "Hägele",
+      "geburtstag": "03.10.1976",
+      "gruppen": [
+        "Familie"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 129
+    },
+    {
+      "vorname": "Jan",
+      "nachname": "Haffner",
+      "geburtstag": "02.01.1996",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 130
+    },
+    {
+      "vorname": "Josef",
+      "nachname": "Hecker",
+      "geburtstag": "09.01.1937",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 131
+    },
+    {
+      "vorname": "Werner",
+      "nachname": "Thome",
+      "geburtstag": "31.01.1959",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 132
+    },
+    {
+      "vorname": "Eugen",
+      "nachname": "Steinhauser",
+      "geburtstag": "05.02.1938",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 133
+    },
+    {
+      "vorname": "Manfred",
+      "nachname": "Bitz",
+      "geburtstag": "31.01.1959",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 134
+    },
+    {
+      "vorname": "Bruno",
+      "nachname": "Feuerstein",
+      "geburtstag": "07.02.1937",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 135
+    },
+    {
+      "vorname": "Michael",
+      "nachname": "Waßmer",
+      "geburtstag": "09.02.1967",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 136
+    },
+    {
+      "vorname": "Kuno",
+      "nachname": "Bellemann",
+      "geburtstag": "08.10.1931",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 137
+    },
+    {
+      "vorname": "Albert",
+      "nachname": "Bellemann",
+      "geburtstag": "09.10.1949",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 138
+    },
+    {
+      "vorname": "Stefan",
+      "nachname": "Seidel",
+      "geburtstag": "13.10.1970",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 139
+    },
+    {
+      "vorname": "Wolfgang",
+      "nachname": "Kamuf",
+      "geburtstag": "20.10.1947",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 140
+    },
+    {
+      "vorname": "Stephanie",
+      "nachname": "Tropf",
+      "geburtstag": "10.05.1979",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 141
+    },
+    {
+      "vorname": "Bernd",
+      "nachname": "Ittensohn",
+      "geburtstag": "13.10.1957",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 142
+    },
+    {
+      "vorname": "Theo",
+      "nachname": "Geider",
+      "geburtstag": "21.10.1943",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 143
+    },
+    {
+      "vorname": "Wilhelm",
+      "nachname": "Mertel",
+      "geburtstag": "26.10.1939",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 144
+    },
+    {
+      "vorname": "Franz",
+      "nachname": "Lechnauer",
+      "geburtstag": "26.10.1954",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 145
+    },
+    {
+      "vorname": "Michael",
+      "nachname": "Schmidt",
+      "geburtstag": "27.10.1977",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 146
+    },
+    {
+      "vorname": "Erna",
+      "nachname": "Hecker",
+      "geburtstag": "28.10.1940",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 147
+    },
+    {
+      "vorname": "Andreas",
+      "nachname": "Uhrig",
+      "geburtstag": "29.10.1977",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 148
+    },
+    {
+      "vorname": "Erwin",
+      "nachname": "Geider",
+      "geburtstag": "11.11.1939",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 149
+    },
+    {
+      "vorname": "Magdalena",
+      "nachname": "Rothermel",
+      "geburtstag": "12.11.1946",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 150
+    },
+    {
+      "vorname": "Andrea",
+      "nachname": "Ronellenfisch",
+      "geburtstag": "27.03.1962",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 151
+    },
+    {
+      "vorname": "Jochen",
+      "nachname": "Germer",
+      "geburtstag": "05.04.1980",
+      "gruppen": [
+        "CDU"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 152
+    },
+    {
+      "vorname": "Lydia",
+      "nachname": "Hägele",
+      "geburtstag": "18.07.1956",
+      "gruppen": [
+        "Familie"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 153
+    },
+    {
+      "vorname": "Jörg",
+      "nachname": "Hägele",
+      "geburtstag": "09.11.1978",
+      "gruppen": [
+        "Familie"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 154
+    },
+    {
+      "vorname": "Thomas",
+      "nachname": "Hägele",
+      "geburtstag": "03.11.1980",
+      "gruppen": [
+        "Familie"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 155
+    },
+    {
+      "vorname": "Jutta",
+      "nachname": "Jöchle",
+      "geburtstag": "26.12.1974",
+      "gruppen": [
+        "Freunde"
+      ],
+      "email": "",
+      "telefon": "",
+      "notizen": "",
+      "id": 156
+    }
+  ]
+}

@@ -1,58 +1,40 @@
 ﻿# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Production
+dist/
+build/
+
+# Local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Database
-*.db-journal
-
-# Backup files
-backup*/
-*backup*.html
-*_backup_*
-
-# Test files
-test*.js
-*test*.html
-check*.js
-fix*.js
-
-# IDE
+# Editor
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Environment
-.env
-.env.local
+# Vite
+dist-ssr/
+*.local
 
-# Logs
-logs/
-*.log
-
-# Temporary
-temp/
-tmp/
-*.tmp
-
-# NPM (wir nutzen Yarn!)
-package-lock.json
-npm-debug.log*
-.npm/
-npm-shrinkwrap.json
-
-# Yarn
-yarn-error.log
-.yarn/*
-!.yarn/cache
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
+# Backup files
+*.backup
+*.bak
+*-backup.jsx
+*-working.jsx
