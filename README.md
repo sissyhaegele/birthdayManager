@@ -1,19 +1,19 @@
-# 🎂 Birthday Manager
+﻿# ðŸŽ‚ Birthday Manager
 
 Eine moderne Webanwendung zur Verwaltung von Kontakten und Geburtstagen mit lokaler Speicherung.
 
-## ✨ Features
+## âœ¨ Features
 
-- 📅 **Geburtstagskalender** - Übersicht über anstehende Geburtstage
-- 👥 **Kontaktverwaltung** - Erstellen, bearbeiten und löschen von Kontakten
-- 🏷️ **Gruppensystem** - Mehrfachzuordnung zu Gruppen (Familie, Freunde, CDU, etc.)
-- 💾 **Lokale Speicherung** - Alle Daten werden lokal in IndexedDB gespeichert
-- 📊 **CSV Import/Export** - Bulk-Import und Export von Kontakten
-- 🔍 **Suche & Filter** - Schnelles Finden von Kontakten
-- 📱 **Responsive Design** - Optimiert für Desktop und Mobile
-- 🇩🇪 **Deutsches Datumsformat** - TT.MM.JJJJ
+- ðŸ“… **Geburtstagskalender** - Ãœbersicht Ã¼ber anstehende Geburtstage
+- ðŸ‘¥ **Kontaktverwaltung** - Erstellen, bearbeiten und lÃ¶schen von Kontakten
+- ðŸ·ï¸ **Gruppensystem** - Mehrfachzuordnung zu Gruppen (Familie, Freunde, CDU, etc.)
+- ðŸ’¾ **Lokale Speicherung** - Alle Daten werden lokal in IndexedDB gespeichert
+- ðŸ“Š **CSV Import/Export** - Bulk-Import und Export von Kontakten
+- ðŸ” **Suche & Filter** - Schnelles Finden von Kontakten
+- ðŸ“± **Responsive Design** - Optimiert fÃ¼r Desktop und Mobile
+- ðŸ‡©ðŸ‡ª **Deutsches Datumsformat** - TT.MM.JJJJ
 
-## 🚀 Installation
+## ðŸš€ Installation
 
 ### Voraussetzungen
 
@@ -34,9 +34,9 @@ yarn install
 yarn dev
 ```
 
-Die Anwendung ist nun unter `http://localhost:3001` verfügbar.
+Die Anwendung ist nun unter `http://localhost:3001` verfÃ¼gbar.
 
-## 📦 Deployment
+## ðŸ“¦ Deployment
 
 ### Production Build erstellen
 
@@ -78,7 +78,7 @@ netlify deploy --prod --dir=dist
 # gh-pages Package installieren
 yarn add --dev gh-pages
 
-# Deploy Script zu package.json hinzufügen
+# Deploy Script zu package.json hinzufÃ¼gen
 "scripts": {
   "deploy": "yarn build && gh-pages -d dist"
 }
@@ -114,9 +114,9 @@ docker run -p 8080:80 birthday-manager
 
 #### 5. **Traditioneller Webserver**
 
-Nach dem Build können Sie den Inhalt des `dist` Ordners auf jeden Webserver (Apache, Nginx, etc.) hochladen.
+Nach dem Build kÃ¶nnen Sie den Inhalt des `dist` Ordners auf jeden Webserver (Apache, Nginx, etc.) hochladen.
 
-## 📊 CSV Format
+## ðŸ“Š CSV Format
 
 ### Import Format
 
@@ -124,7 +124,7 @@ Die CSV-Datei muss mit Semikolon (;) getrennt sein:
 
 ```csv
 Vorname;Nachname;Geburtstag;Gruppen;E-Mail;Telefon;Notizen
-Max;Mustermann;15.03.1985;Familie,Freunde;max@example.com;0171-2345678;Mag Bücher
+Max;Mustermann;15.03.1985;Familie,Freunde;max@example.com;0171-2345678;Mag BÃ¼cher
 Anna;Schmidt;22.08.1990;CDU,Kollegen;anna@example.com;0151-3456789;Liebt Schokolade
 ```
 
@@ -138,9 +138,9 @@ Anna;Schmidt;22.08.1990;CDU,Kollegen;anna@example.com;0151-3456789;Liebt Schokol
 - **Telefon**: Telefonnummer (Optional)
 - **Notizen**: Freitext (Optional)
 
-## 🛠️ Entwicklung
+## ðŸ› ï¸ Entwicklung
 
-### Verfügbare Scripts
+### VerfÃ¼gbare Scripts
 
 ```bash
 # Entwicklungsserver starten
@@ -160,67 +160,76 @@ yarn lint
 
 ```
 birthday-manager-app/
-├── src/
-│   ├── components/       # React Komponenten
-│   │   ├── BirthdayManager.jsx
-│   │   ├── ContactForm.jsx
-│   │   ├── ContactList.jsx
-│   │   ├── GroupManager.jsx
-│   │   ├── ImportExport.jsx
-│   │   └── Statistics.jsx
-│   ├── utils/           # Hilfsfunktionen
-│   │   ├── database.js  # IndexedDB Operationen
-│   │   ├── dateHelpers.js # Datumsfunktionen
-│   │   └── csvUtils.js  # CSV Import/Export
-│   ├── App.jsx          # Hauptkomponente
-│   ├── main.jsx         # Einstiegspunkt
-│   └── index.css        # Globale Styles
-├── public/              # Statische Dateien
-├── package.json         # Dependencies
-├── vite.config.js       # Vite Konfiguration
-├── tailwind.config.js   # Tailwind Konfiguration
-└── README.md           # Dokumentation
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ components/       # React Komponenten
+â”‚   â”‚   â”œâ”€â”€ BirthdayManager.jsx
+â”‚   â”‚   â”œâ”€â”€ ContactForm.jsx
+â”‚   â”‚   â”œâ”€â”€ ContactList.jsx
+â”‚   â”‚   â”œâ”€â”€ GroupManager.jsx
+â”‚   â”‚   â”œâ”€â”€ ImportExport.jsx
+â”‚   â”‚   â””â”€â”€ Statistics.jsx
+â”‚   â”œâ”€â”€ utils/           # Hilfsfunktionen
+â”‚   â”‚   â”œâ”€â”€ database.js  # IndexedDB Operationen
+â”‚   â”‚   â”œâ”€â”€ dateHelpers.js # Datumsfunktionen
+â”‚   â”‚   â””â”€â”€ csvUtils.js  # CSV Import/Export
+â”‚   â”œâ”€â”€ App.jsx          # Hauptkomponente
+â”‚   â”œâ”€â”€ main.jsx         # Einstiegspunkt
+â”‚   â””â”€â”€ index.css        # Globale Styles
+â”œâ”€â”€ public/              # Statische Dateien
+â”œâ”€â”€ package.json         # Dependencies
+â”œâ”€â”€ vite.config.js       # Vite Konfiguration
+â”œâ”€â”€ tailwind.config.js   # Tailwind Konfiguration
+â””â”€â”€ README.md           # Dokumentation
 ```
 
-## 🔧 Konfiguration
+## ðŸ”§ Konfiguration
 
 ### Umgebungsvariablen
 
-Erstellen Sie eine `.env` Datei für lokale Entwicklung:
+Erstellen Sie eine `.env` Datei fÃ¼r lokale Entwicklung:
 
 ```env
 VITE_APP_NAME=Birthday Manager
 VITE_APP_VERSION=1.0.0
 ```
 
-### Browser-Kompatibilität
+### Browser-KompatibilitÃ¤t
 
 - Chrome/Edge 90+
 - Firefox 88+
 - Safari 14+
-- Benötigt IndexedDB Unterstützung
+- BenÃ¶tigt IndexedDB UnterstÃ¼tzung
 
-## 📝 Lizenz
+## ðŸ“ Lizenz
 
 MIT License
 
-## 👥 Beitragen
+## ðŸ‘¥ Beitragen
 
 1. Fork erstellen
 2. Feature Branch erstellen (`git checkout -b feature/AmazingFeature`)
-3. Änderungen committen (`git commit -m 'Add some AmazingFeature'`)
+3. Ã„nderungen committen (`git commit -m 'Add some AmazingFeature'`)
 4. Branch pushen (`git push origin feature/AmazingFeature`)
 5. Pull Request erstellen
 
-## 🐛 Bekannte Probleme
+## ðŸ› Bekannte Probleme
 
 - IndexedDB ist in privaten Browserfenstern limitiert
-- CSV-Import mit sehr großen Dateien (>10MB) kann langsam sein
+- CSV-Import mit sehr groÃŸen Dateien (>10MB) kann langsam sein
 
-## 📧 Support
+## ðŸ“§ Support
 
 Bei Fragen oder Problemen erstellen Sie bitte ein Issue im GitHub Repository.
 
 ---
 
-Made with ❤️ using React, Vite, and Tailwind CSS
+Made with â¤ï¸ using React, Vite, and Tailwind CSS
+
+---
+
+## Copyright & Lizenz
+
+Copyright © 2025 Sissy Hägele - Alle Rechte vorbehalten
+
+Dieses Projekt ist privates Eigentum und nicht zur öffentlichen Nutzung freigegeben.
+
