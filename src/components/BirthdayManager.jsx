@@ -216,33 +216,41 @@ const BirthdayManager = () => {
     return age;
   };
 
-  // Gefilterte und sortierte Kontakte
-  const filteredContacts = useMemo(() => {
-    let filtered = contacts;
-    
-    if (filterGroup !== 'alle') {
-      filtered = filtered.filter(c => c.gruppen && c.gruppen.includes(filterGroup));
-    }
-    
-    if (searchTerm) {
-      filtered = filtered.filter(c => 
-        `${c.vorname} ${c.nachname}`.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    
-    if (showUpcoming) {
-      filtered = filtered.filter(c => {
-        const days = getDaysUntilBirthday(c.geburtstag);
-        return days !== null && days <= 30;
-      });
-    }
-    
-    return filtered.sort((a, b) => {
-      const daysA = getDaysUntilBirthday(a.geburtstag) || 999;
-      const daysB = getDaysUntilBirthday(b.geburtstag) || 999;
-      return daysA - daysB;
+// Gefilterte und sortierte Kontakte
+const filteredContacts = useMemo(() => {
+  let filtered = contacts;
+  
+  if (filterGroup !== 'alle') {
+    filtered = filtered.filter(c => c.gruppen && c.gruppen.includes(filterGroup));
+  }
+  
+  if (searchTerm) {
+    filtered = filtered.filter(c => 
+      `${c.vorname} ${c.nachname}`.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+  
+  if (showUpcoming) {
+    filtered = filtered.filter(c => {
+      const days = getDaysUntilBirthday(c.geburtstag);
+      return days !== null && days <= 30;
     });
-  }, [contacts, filterGroup, searchTerm, showUpcoming]);
+  }
+  
+  return filtered.sort((a, b) => {
+    const daysA = getDaysUntilBirthday(a.geburtstag);
+    const daysB = getDaysUntilBirthday(b.geburtstag);
+    
+    // Wenn beide null sind, gleich
+    if (daysA === null && daysB === null) return 0;
+    // Null-Werte ans Ende
+    if (daysA === null) return 1;
+    if (daysB === null) return -1;
+    
+    // Normale Sortierung: 0 (heute) kommt vor 1, 2, 3...
+    return daysA - daysB;
+  });
+}, [contacts, filterGroup, searchTerm, showUpcoming]);
 
   // Kontakt-Formular Komponente
   const ContactForm = ({ contact, onSave, onCancel }) => {
