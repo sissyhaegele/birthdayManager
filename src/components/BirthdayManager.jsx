@@ -25,7 +25,7 @@ const BirthdayManager = () => {
     request.onerror = () => console.error("IndexedDB Fehler");
     
     request.onsuccess = () => {
-      console.log("Datenbank erfolgreich geÃƒÆ’Ã‚Â¶ffnet");
+      console.log("Datenbank erfolgreich geöffnet");
     };
     
     request.onupgradeneeded = (event) => {
@@ -165,16 +165,36 @@ const BirthdayManager = () => {
   const getDaysUntilBirthday = (birthdate) => {
     if (!birthdate) return null;
     
-    const [day, month, year] = birthdate.split('.');
+    const parts = birthdate.trim().split('.');
+    if (parts.length !== 3) return null;
+    
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1; // JS months are 0-based
+    
     const today = new Date();
-    const thisYear = today.getFullYear();
+    today.setHours(0, 0, 0, 0);
     
-    let birthday = new Date(thisYear, month - 1, day);
+    const currentYear = today.getFullYear();
     
-    if (birthday < today) {
-      birthday = new Date(thisYear + 1, month - 1, day);
+    // Geburtstag dieses Jahr
+    let birthday = new Date(currentYear, month, day);
+    birthday.setHours(0, 0, 0, 0);
+    
+    // Vergleiche Datum
+    const todayTime = today.getTime();
+    const birthdayTime = birthday.getTime();
+    
+    // Wenn heute Geburtstag ist
+    if (birthdayTime === todayTime) {
+      return 0;
     }
     
+    // Wenn Geburtstag schon war, nÃƒÂ¤chstes Jahr
+    if (birthdayTime < todayTime) {
+      birthday.setFullYear(currentYear + 1);
+    }
+    
+    // Berechne Tage
     const diffTime = birthday - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
@@ -556,7 +576,7 @@ const BirthdayManager = () => {
                             </button>
                             <button
                               onClick={() => {
-                                if (confirm('Kontakt wirklich lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶schen?')) {
+                                if (confirm('Kontakt wirklich löschen?')) {
                                   deleteContact(contact.id);
                                 }
                               }}
@@ -589,7 +609,7 @@ const BirthdayManager = () => {
               type="text"
               value={newGroup}
               onChange={(e) => setNewGroup(e.target.value)}
-              placeholder="Neue Gruppe hinzufÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¼gen..."
+              placeholder="Neue Gruppe hinzufügen..."
               className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button

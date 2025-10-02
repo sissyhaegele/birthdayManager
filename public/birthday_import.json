@@ -1,0 +1,820 @@
+﻿{
+    "exportDate":  "02.10.2025 07:35:32",
+    "contacts":  [
+                     {
+                         "vorname":  "Name,Geburtsdatum,Bereiche,Email,Telefon",
+                         "nachname":  "",
+                         "geburtstag":  "Notizen",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Sirikit",
+                         "nachname":  "Klevenz",
+                         "geburtstag":  "01.01.1968",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Jan",
+                         "nachname":  "Haffner",
+                         "geburtstag":  "02.01.1996",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Josef",
+                         "nachname":  "Hecker",
+                         "geburtstag":  "09.01.1937",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Werner",
+                         "nachname":  "Thome",
+                         "geburtstag":  "31.01.1959",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Manfred",
+                         "nachname":  "Bitz",
+                         "geburtstag":  "31.01.1959",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Eugen",
+                         "nachname":  "Steinhauser",
+                         "geburtstag":  "05.02.1938",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Bruno",
+                         "nachname":  "Feuerstein",
+                         "geburtstag":  "07.02.1937",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Michael",
+                         "nachname":  "Waßmer",
+                         "geburtstag":  "09.02.1967",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Benno",
+                         "nachname":  "Fischer",
+                         "geburtstag":  "12.02.1950",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Stephan",
+                         "nachname":  "Linder",
+                         "geburtstag":  "16.02.1985",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Helmut",
+                         "nachname":  "Bellemann",
+                         "geburtstag":  "26.02.1939",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Gerhard",
+                         "nachname":  "Back",
+                         "geburtstag":  "26.02.1950",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Udo",
+                         "nachname":  "Back",
+                         "geburtstag":  "05.03.1975",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Karlheinz",
+                         "nachname":  "Jung",
+                         "geburtstag":  "16.03.1970",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Josef",
+                         "nachname":  "Becker",
+                         "geburtstag":  "17.03.1958",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Wolfgang",
+                         "nachname":  "Bitsch",
+                         "geburtstag":  "18.03.1965",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Albrecht",
+                         "nachname":  "Rothermel",
+                         "geburtstag":  "19.03.1942",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Dieter",
+                         "nachname":  "Heinrich",
+                         "geburtstag":  "21.03.1937",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Dieter",
+                         "nachname":  "Zimmermann",
+                         "geburtstag":  "25.03.1943",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Carsten",
+                         "nachname":  "Kamuf",
+                         "geburtstag":  "26.03.1978",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Andrea",
+                         "nachname":  "Ronellenfisch",
+                         "geburtstag":  "27.03.1962",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Hugo",
+                         "nachname":  "Stegmüller",
+                         "geburtstag":  "31.03.1927",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Horst",
+                         "nachname":  "Knopf",
+                         "geburtstag":  "03.04.1957",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Jochen",
+                         "nachname":  "Germer",
+                         "geburtstag":  "05.04.1980",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Josef",
+                         "nachname":  "Wittmann",
+                         "geburtstag":  "11.04.1956",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Holger",
+                         "nachname":  "Hinz",
+                         "geburtstag":  "24.04.1940",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Birgit",
+                         "nachname":  "Klemenz",
+                         "geburtstag":  "24.04.1950",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Leo",
+                         "nachname":  "Goetzmann",
+                         "geburtstag":  "26.04.1936",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Luca",
+                         "nachname":  "Ian Klevenz",
+                         "geburtstag":  "01.05.1998",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Andreas",
+                         "nachname":  "Schlett",
+                         "geburtstag":  "04.05.1951",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Dieter",
+                         "nachname":  "Heinzmann",
+                         "geburtstag":  "08.05.1960",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Stephanie",
+                         "nachname":  "Tropf",
+                         "geburtstag":  "10.05.1979",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Bernhard",
+                         "nachname":  "Köhler",
+                         "geburtstag":  "11.05.1961",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Søren",
+                         "nachname":  "Heck",
+                         "geburtstag":  "13.05.2000",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Tobias",
+                         "nachname":  "Berger",
+                         "geburtstag":  "14.05.1987",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Erich",
+                         "nachname":  "Purkott",
+                         "geburtstag":  "15.05.1949",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Alexander",
+                         "nachname":  "Kremer",
+                         "geburtstag":  "17.05.1991",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Gerhard",
+                         "nachname":  "Linder",
+                         "geburtstag":  "11.06.1950",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Horst",
+                         "nachname":  "Simon",
+                         "geburtstag":  "21.06.1938",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Werner",
+                         "nachname":  "Kleiber",
+                         "geburtstag":  "22.06.1964",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Diana",
+                         "nachname":  "Maria Rechmann",
+                         "geburtstag":  "23.06.1980",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Walter",
+                         "nachname":  "Götzmann",
+                         "geburtstag":  "25.06.1946",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Stefan",
+                         "nachname":  "Geider",
+                         "geburtstag":  "28.06.1972",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Karl-Albrecht",
+                         "nachname":  "Knopf",
+                         "geburtstag":  "22.07.1968",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Klaus",
+                         "nachname":  "Kamuf",
+                         "geburtstag":  "26.07.1968",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Konrad",
+                         "nachname":  "Kolibius",
+                         "geburtstag":  "03.08.1950",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Hildegard",
+                         "nachname":  "Marus",
+                         "geburtstag":  "17.08.1947",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Werner",
+                         "nachname":  "Vetter",
+                         "geburtstag":  "24.08.1950",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Helmut",
+                         "nachname":  "Goetzmann",
+                         "geburtstag":  "02.09.1948",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Michael",
+                         "nachname":  "Eck",
+                         "geburtstag":  "08.09.1968",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Alfred",
+                         "nachname":  "Götzmann",
+                         "geburtstag":  "20.09.1952",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Erich",
+                         "nachname":  "Heger",
+                         "geburtstag":  "22.09.1949",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Achim",
+                         "nachname":  "Schell",
+                         "geburtstag":  "02.10.1970",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Sissy",
+                         "nachname":  "Hägele",
+                         "geburtstag":  "05.10.1976",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Kuno",
+                         "nachname":  "Bellemann",
+                         "geburtstag":  "08.10.1931",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Albert",
+                         "nachname":  "Bellemann",
+                         "geburtstag":  "09.10.1949",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Stefan",
+                         "nachname":  "Seidel",
+                         "geburtstag":  "13.10.1970",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Bernd",
+                         "nachname":  "Ittensohn",
+                         "geburtstag":  "13.10.1957",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Wolfgang",
+                         "nachname":  "Kamuf",
+                         "geburtstag":  "20.10.1947",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Theo",
+                         "nachname":  "Geider",
+                         "geburtstag":  "21.10.1943",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Wilhelm",
+                         "nachname":  "Mertel",
+                         "geburtstag":  "26.10.1939",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Franz",
+                         "nachname":  "Lechnauer",
+                         "geburtstag":  "26.10.1954",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Michael",
+                         "nachname":  "Schmidt",
+                         "geburtstag":  "27.10.1977",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Erna",
+                         "nachname":  "Hecker",
+                         "geburtstag":  "28.10.1940",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Andreas",
+                         "nachname":  "Uhrig",
+                         "geburtstag":  "29.10.1977",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Erwin",
+                         "nachname":  "Geider",
+                         "geburtstag":  "11.11.1939",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Magdalena",
+                         "nachname":  "Rothermel",
+                         "geburtstag":  "12.11.1946",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Edgar",
+                         "nachname":  "Thome",
+                         "geburtstag":  "21.11.1946",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Anton",
+                         "nachname":  "Kremer",
+                         "geburtstag":  "21.11.1946",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Kuno",
+                         "nachname":  "Schnader",
+                         "geburtstag":  "03.12.1928",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Roman",
+                         "nachname":  "Heger",
+                         "geburtstag":  "05.12.1959",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Alfred",
+                         "nachname":  "Köhler",
+                         "geburtstag":  "11.12.1952",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     },
+                     {
+                         "vorname":  "Gerhard",
+                         "nachname":  "Kynast",
+                         "geburtstag":  "12.12.1947",
+                         "gruppen":  [
+                                         "St. Leon-Rot"
+                                     ],
+                         "email":  "",
+                         "telefon":  "",
+                         "notizen":  ""
+                     }
+                 ],
+    "version":  "2.0"
+}

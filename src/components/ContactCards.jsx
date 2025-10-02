@@ -1,21 +1,82 @@
-﻿import React from 'react';
-import { Edit, Trash2 } from 'lucide-react';
+import React from 'react';
 
 const ContactCards = ({ contacts, onEdit, onDelete }) => {
   const getDaysUntilBirthday = (birthdate) => {
     if (!birthdate) return null;
     
-    const [day, month] = birthdate.split('.');
-    const today = new Date();
-    const thisYear = today.getFullYear();
+    const parts = birthdate.trim().split('.');
+    if (parts.length !== 3) return null;
     
-    let birthday = new Date(thisYear, month - 1, day);
-    if (birthday < today) {
-      birthday = new Date(thisYear + 1, month - 1, day);
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1;
+    
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const currentDay = today.getDate();
+    
+    if (day === currentDay && month === currentMonth) {
+      return 0;
     }
     
-    const diffDays = Math.ceil((birthday - today) / (1000 * 60 * 60 * 24));
-    return diffDays;
+    let birthdayThisYear = new Date(currentYear, month, day, 0, 0, 0, 0);
+    const todayClean = new Date(currentYear, currentMonth, currentDay, 0, 0, 0, 0);
+    
+    if (birthdayThisYear < todayClean) {
+      birthdayThisYear = new Date(currentYear + 1, month, day, 0, 0, 0, 0);
+    }
+    
+    const diffTime = birthdayThisYear.getTime() - todayClean.getTime();
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+    
+    return Math.max(0, diffDays);
+  };
+  
+  const getAge = (birthdate) => {
+    if (!birthdate) return null;
+    
+    const parts = birthdate.trim().split('.');
+    if (parts.length !== 3) return null;
+    
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]);
+    const year = parseInt(parts[2]);
+    
+    const today = new Date();
+    let age = today.getFullYear() - year;
+    
+    // Hatte die Person dieses Jahr schon Geburtstag?
+    const birthdayThisYear = new Date(today.getFullYear(), month - 1, day);
+    if (birthdayThisYear > today) {
+      age--; // Noch nicht Geburtstag gehabt
+    }
+    
+    return age;
+  };
+  
+  const getDisplayAge = (birthdate) => {
+    if (!birthdate) return null;
+    
+    const parts = birthdate.trim().split('.');
+    if (parts.length !== 3) return null;
+    
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]);
+    const year = parseInt(parts[2]);
+    
+    const today = new Date();
+    const currentDay = today.getDate();
+    const currentMonth = today.getMonth() + 1;
+    
+    // Berechne das Alter das die Person WIRD
+    let turningAge = today.getFullYear() - year;
+    
+    // Wenn der Geburtstag schon war (aber nicht heute), zeige nächstes Jahr
+    if (month < currentMonth || (month === currentMonth && day < currentDay)) {
+      turningAge = turningAge + 1;
+    }
+    
+    return turningAge;
   };
 
   const sortedContacts = [...contacts].sort((a, b) => {
@@ -29,68 +90,81 @@ const ContactCards = ({ contacts, onEdit, onDelete }) => {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-      {sortedContacts.slice(0, 20).map((contact, index) => (
-        <div 
-          key={contact.id || index} 
-          className="border border-gray-300 rounded p-3 bg-white hover:shadow-lg transition-shadow relative group"
-        >
-          {/* Bearbeitungs-Buttons - nur bei Hover sichtbar */}
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-            <button
-              onClick={() => onEdit(contact)}
-              className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-              title="Bearbeiten"
-            >
-              <Edit size={14} />
-            </button>
-            <button
-              onClick={() => {
-                if (confirm(`${contact.vorname} ${contact.nachname} wirklich löschen?`)) {
-                  onDelete(contact.id);
-                }
-              }}
-              className="p-1 bg-red-500 text-white rounded hover:bg-red-600"
-              title="Löschen"
-            >
-              <Trash2 size={14} />
-            </button>
-          </div>
-          
-          {/* Kontakt-Info */}
-          <div className="font-semibold">
-            {contact.vorname} {contact.nachname}
-          </div>
-          
-          {contact.geburtstag && (
-            <div className="text-sm text-gray-600">
-              {contact.geburtstag}
-            </div>
-          )}
-          
-          {getDaysUntilBirthday(contact.geburtstag) !== null && (
-            <div className="text-xs mt-1">
-              <span className={`inline-block px-2 py-1 rounded ${
-                getDaysUntilBirthday(contact.geburtstag) === 0 ? 'bg-green-500 text-white' :
-                getDaysUntilBirthday(contact.geburtstag) <= 7 ? 'bg-orange-500 text-white' :
-                'bg-blue-500 text-white'
-              }`}>
-                {getDaysUntilBirthday(contact.geburtstag) === 0 ? 'HEUTE!' :
-                 `In ${getDaysUntilBirthday(contact.geburtstag)} Tagen`}
-              </span>
-            </div>
-          )}
-          
-          {contact.gruppen && contact.gruppen.length > 0 && (
-            <div className="mt-2">
-              {contact.gruppen.map((gruppe, idx) => (
-                <span key={idx} className="text-xs bg-gray-200 px-1 py-0.5 rounded mr-1">
-                  {gruppe}
+      {sortedContacts.slice(0, 20).map((contact, index) => {
+        const days = getDaysUntilBirthday(contact.geburtstag);
+        const nextAge = getDisplayAge(contact.geburtstag);
+        
+        return (
+          <div 
+            key={contact.id || index} 
+            className="border border-gray-300 rounded p-3 bg-white hover:shadow-lg transition-shadow relative group"
+          >
+            {/* Bearbeitungs-Buttons */}
+            {onEdit && onDelete && (
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                <button
+                  onClick={() => onEdit(contact)}
+                  className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  title="Bearbeiten"
+                >
+                  ✏️
+                </button>
+                <button
+                  onClick={() => {
+                    if (confirm(`${contact.vorname} ${contact.nachname} wirklich löschen?`)) {
+                      onDelete(contact.id);
+                    }
+                  }}
+                  className="p-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  title="Löschen"
+                >
+                  🗑️
+                </button>
+              </div>
+            )}
+            
+            {/* Name und Alter Badge */}
+            <div className="flex items-start justify-between mb-2">
+              <div className="font-semibold">
+                {contact.vorname} {contact.nachname}
+              </div>
+              {nextAge && (
+                <span className="bg-gray-200 text-gray-700 text-xs font-bold px-2 py-1 rounded-full">
+                  {nextAge}
                 </span>
-              ))}
+              )}
             </div>
-          )}
-        </div>
-      ))}
+            
+            {contact.geburtstag && (
+              <div className="text-sm text-gray-600">
+                {contact.geburtstag}
+              </div>
+            )}
+            
+            {days !== null && (
+              <div className="text-xs mt-1">
+                <span className={`inline-block px-2 py-1 rounded ${
+                  days === 0 ? 'bg-green-500 text-white animate-pulse' :
+                  days <= 7 ? 'bg-orange-500 text-white' :
+                  'bg-blue-500 text-white'
+                }`}>
+                  {days === 0 ? '🎉 HEUTE!' : `In ${days} Tagen`}
+                </span>
+              </div>
+            )}
+            
+            {contact.gruppen && contact.gruppen.length > 0 && (
+              <div className="mt-2">
+                {contact.gruppen.map((gruppe, idx) => (
+                  <span key={idx} className="text-xs bg-gray-200 px-1 py-0.5 rounded mr-1">
+                    {gruppe}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
