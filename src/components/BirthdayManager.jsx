@@ -189,7 +189,7 @@ const BirthdayManager = () => {
       return 0;
     }
     
-    // Wenn Geburtstag schon war, nÃƒÂ¤chstes Jahr
+    // Wenn Geburtstag schon war, nächstes Jahr
     if (birthdayTime < todayTime) {
       birthday.setFullYear(currentYear + 1);
     }
