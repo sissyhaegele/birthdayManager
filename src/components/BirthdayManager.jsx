@@ -218,23 +218,23 @@ const BirthdayManager = () => {
     });
   }, [contacts, filterGroup, searchTerm, showUpcoming]);
 
-  // ===== KORRIGIERTES KONTAKT-FORMULAR =====
+  // =====KONTAKT-FORMULAR =====
   const ContactForm = ({ contact, onSave, onCancel }) => {
-    // FIX 1: Alle Felder immer definiert (nie undefined)
+    
     const [formData, setFormData] = useState({
-      vorname: contact?.vorname || '',
-      nachname: contact?.nachname || '',
-      geburtstag: contact?.geburtstag || '',
-      gruppen: contact?.gruppen || [],
-      email: contact?.email || '',
-      telefon: contact?.telefon || '',
-      strasse: contact?.strasse || '',
-      hausnummer: contact?.hausnummer || '',
-      plz: contact?.plz || '',
-      ort: contact?.ort || '',
-      notizen: contact?.notizen || '',
-      id: contact?.id
-    });
+    vorname: contact?.vorname || '',
+    nachname: contact?.nachname || '',
+    geburtstag: contact?.geburtstag || '',
+    gruppen: contact?.gruppen || [],
+    email: contact?.email || '',
+    telefon: contact?.telefon || '',
+    strasse: contact?.strasse || '',
+    hausnummer: contact?.hausnummer || '',
+    plz: contact?.plz || '',
+    ort: contact?.ort || '',
+    notizen: contact?.notizen || '',
+    ...(contact?.id && { id: contact.id })
+});
 
     // FIX 2: PLZ Autocomplete - nur ein setFormData Call
     const handlePLZChange = (value) => {
